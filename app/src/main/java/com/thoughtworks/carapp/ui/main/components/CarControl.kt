@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,10 +66,11 @@ fun CarControl() {
 @Composable
 fun CenterCar(state: Toogle) {
     if (state == Toogle.On) {
-        CenterEnginOn(state)
+        CenterEnginOn()
     } else {
         Image(
             painter = painterResource(id = R.drawable.car2),
+            modifier = Modifier.width(400.dp),
             contentDescription = null
         )
     }
@@ -75,35 +78,43 @@ fun CenterCar(state: Toogle) {
 }
 
 @Composable
-fun CenterEnginOn(state: Toogle) {
+fun CenterEnginOn() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
-        Image(
-            painter = painterResource(id = R.drawable.car1),
-            contentDescription = null
-        )
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-        )
-        {
+        Box {
             Image(
-                painter = painterResource(id = R.drawable.light1_off),
+                painter = painterResource(id = R.drawable.car1),
                 contentDescription = null
             )
-            Spacer(modifier = Modifier.width(32.dp))
-            Image(
-                painter = painterResource(id = R.drawable.light2_off),
-                contentDescription = null
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .offset(y = 70.dp)
+                    .align(Alignment.BottomCenter)
             )
-            Spacer(modifier = Modifier.width(32.dp))
-            Image(
-                painter = painterResource(id = R.drawable.light3_off),
-                contentDescription = null
-            )
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.light1_off),
+                    modifier = Modifier.width(85.dp),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(32.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.light2_off),
+                    modifier = Modifier.width(85.dp),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(32.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.light3_off),
+                    modifier = Modifier.width(85.dp),
+                    contentDescription = null
+                )
+            }
         }
     }
 }
