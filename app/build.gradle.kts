@@ -17,10 +17,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        ndk {
-            abiFilters.add("x86_64")
-            abiFilters.add("arm84-v8a")
-        }
     }
 
     buildTypes {
@@ -46,8 +42,6 @@ android {
 
 dependencies {
     implementation("com.thoughtworks.blindhmi:ui:1.0.11")
-//    implementation(files("jar/arm/android.car.jar"))
-//    implementation(files("jar/x86_64/android.car.jar"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
