@@ -24,7 +24,6 @@ fun MainScreen() {
         Box(
             modifier = Modifier
                 .weight(0.6f)
-                .background(Color.Blue)
         ) { CarControl() }
 
         Box(

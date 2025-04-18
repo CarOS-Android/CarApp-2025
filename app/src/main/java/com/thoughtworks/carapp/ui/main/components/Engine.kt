@@ -16,12 +16,10 @@ import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.Toogle
 
 @Composable
-fun Engine() {
-    var state by remember { mutableStateOf(Toogle.Off) }
-
+fun Engine(state : Toogle, onStateChange: (Toogle) -> Unit) {
     Button(
         onClick = {
-            state = state.toogle()
+            onStateChange(state) // 将新的状态通过回调返回
         },
         modifier = Modifier.background(Color.Transparent),
         colors = ButtonDefaults.buttonColors(
