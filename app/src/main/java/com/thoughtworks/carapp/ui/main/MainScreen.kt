@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.ui.main.components.CarControl
-import com.thoughtworks.carapp.ui.main.components.CarMedium
+import com.thoughtworks.carapp.ui.main.components.CarMedia
 
 @Composable
 fun MainScreen() {
@@ -32,7 +32,7 @@ fun MainScreen() {
                 .weight(0.4f)
                 .background(Color.Red)
         ) {
-            CarMedium()
+            CarMedia()
         }
     }
 }
