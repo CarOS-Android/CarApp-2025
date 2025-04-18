@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,11 +37,11 @@ fun MainScreen() {
     }
 }
 
-enum class Toogle {
+enum class Toggle {
     On,
     Off;
 
-    fun toogle(): Toogle {
+    fun toggle(): Toggle {
         return when (this) {
             On -> Off
             Off -> On

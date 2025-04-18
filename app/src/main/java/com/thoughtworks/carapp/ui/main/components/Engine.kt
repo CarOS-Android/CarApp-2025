@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.thoughtworks.carapp.R
-import com.thoughtworks.carapp.ui.main.Toogle
+import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
-fun Engine(state : Toogle, onStateChange: () -> Unit) {
+fun Engine(state : Toggle, onStateChange: () -> Unit) {
     Button(
         onClick = {
             onStateChange()
@@ -25,8 +25,8 @@ fun Engine(state : Toogle, onStateChange: () -> Unit) {
     ) {
         Image(
             painter = when (state) {
-                Toogle.Off -> painterResource(id = R.drawable.engine_off)
-                Toogle.On -> painterResource(id = R.drawable.engine_on)
+                Toggle.Off -> painterResource(id = R.drawable.engine_off)
+                Toggle.On -> painterResource(id = R.drawable.engine_on)
             },
             contentDescription = null
         )
