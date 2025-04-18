@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -24,7 +23,7 @@ import com.thoughtworks.carapp.ui.main.Toogle
 
 @Composable
 fun CarControl() {
-    var state by remember { mutableStateOf(Toogle.Off) }
+    var enginState by remember { mutableStateOf(Toogle.Off) }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -36,8 +35,8 @@ fun CarControl() {
             contentAlignment = Alignment.CenterEnd
         ) {
             Engine(
-                state,
-                onStateChange = { state = state.toogle() }
+                enginState,
+                onStateChange = { enginState = enginState.toogle() }
             )
         }
 
@@ -47,7 +46,7 @@ fun CarControl() {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CenterCar(state)
+            CenterCar(enginState)
         }
 
         Box(
@@ -56,8 +55,8 @@ fun CarControl() {
                 .fillMaxSize()
         ) {
             Engine(
-                state,
-                onStateChange = { state = state.toogle() }
+                enginState,
+                onStateChange = { enginState = enginState.toogle() }
             )
         }
     }
@@ -97,25 +96,31 @@ fun CenterEnginOn() {
                     .align(Alignment.BottomCenter)
             )
             {
-                Image(
-                    painter = painterResource(id = R.drawable.light1_off),
-                    modifier = Modifier.width(85.dp),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(32.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.light2_off),
-                    modifier = Modifier.width(85.dp),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(32.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.light3_off),
-                    modifier = Modifier.width(85.dp),
-                    contentDescription = null
-                )
+                CarLight()
             }
         }
     }
+}
+
+@Composable
+private fun CarLight() {
+    // todo 后续可以根据车灯的状态来展示具体的车灯图片
+    Image(
+        painter = painterResource(id = R.drawable.light1_off),
+        modifier = Modifier.width(85.dp),
+        contentDescription = null
+    )
+    Spacer(modifier = Modifier.width(32.dp))
+    Image(
+        painter = painterResource(id = R.drawable.light2_off),
+        modifier = Modifier.width(85.dp),
+        contentDescription = null
+    )
+    Spacer(modifier = Modifier.width(32.dp))
+    Image(
+        painter = painterResource(id = R.drawable.light3_off),
+        modifier = Modifier.width(85.dp),
+        contentDescription = null
+    )
 }
 

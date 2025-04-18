@@ -5,10 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -16,10 +12,10 @@ import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.Toogle
 
 @Composable
-fun Engine(state : Toogle, onStateChange: (Toogle) -> Unit) {
+fun Engine(state : Toogle, onStateChange: () -> Unit) {
     Button(
         onClick = {
-            onStateChange(state) // 将新的状态通过回调返回
+            onStateChange()
         },
         modifier = Modifier.background(Color.Transparent),
         colors = ButtonDefaults.buttonColors(
