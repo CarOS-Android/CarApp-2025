@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation("com.thoughtworks.blindhmi:ui:1.0.11")
+    implementation(files("libs/android.car.jar"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
