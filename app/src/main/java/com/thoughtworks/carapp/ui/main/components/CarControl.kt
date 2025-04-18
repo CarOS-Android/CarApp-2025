@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.R
-import com.thoughtworks.carapp.ui.main.Toogle
+import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
 fun CarControl() {
-    var enginState by remember { mutableStateOf(Toogle.Off) }
+    var enginState by remember { mutableStateOf(Toggle.Off) }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -36,7 +36,7 @@ fun CarControl() {
         ) {
             Engine(
                 enginState,
-                onStateChange = { enginState = enginState.toogle() }
+                onStateChange = { enginState = enginState.toggle() }
             )
         }
 
@@ -49,22 +49,32 @@ fun CarControl() {
             CenterCar(enginState)
         }
 
-        Box(
+        Row(
             modifier = Modifier
                 .weight(0.3f)
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Engine(
-                enginState,
-                onStateChange = { enginState = enginState.toogle() }
-            )
+            Row (
+                modifier = Modifier
+                    .weight(7f)
+            ) {
+            }
+            Row(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AutoholdComponent()
+            }
         }
     }
 }
 
 @Composable
-fun CenterCar(state: Toogle) {
-    if (state == Toogle.On) {
+fun CenterCar(state: Toggle) {
+    if (state == Toggle.On) {
         CenterEnginOn()
     } else {
         Image(
