@@ -1,6 +1,7 @@
 package com.thoughtworks.carapp.service
 
 import android.car.Car
+import android.car.VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL
 import android.car.VehiclePropertyIds
 import android.car.hardware.property.CarPropertyManager
 import android.content.Context
@@ -25,7 +26,7 @@ class CarService(private val context: Context) {
         return try {
             carPropertyManager?.getProperty(
                 VehiclePropertyIds.IGNITION_STATE,
-                0
+                VEHICLE_AREA_TYPE_GLOBAL
             )?.value as Int
         } catch (e: Exception) {
             Log.e("CarService", "Error getting ignition state", e)

@@ -25,9 +25,6 @@
         </activity>
     </application>
 
-    <uses-permission android:name="android.car.permission.CAR_INFO" />
-    <uses-permission android:name="android.permission.CAR_HARDWARE" />
-    <uses-permission android:name="android.car.permission.CAR_POWER"/>
     <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
 
 </manifest>
