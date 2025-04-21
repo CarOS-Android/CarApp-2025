@@ -24,7 +24,7 @@ class CarService(private val context: Context) {
 
     fun getIgnitionState(): Int? {
         return try {
-            carPropertyManager?.getProperty(
+            carPropertyManager?.getProperty<Int>(
                 VehiclePropertyIds.IGNITION_STATE,
                 VEHICLE_AREA_TYPE_GLOBAL
             )?.value as Int
