@@ -34,10 +34,7 @@ fun CarControl() {
                 .fillMaxSize(),
             contentAlignment = Alignment.CenterEnd
         ) {
-            Engine(
-                enginState,
-                onStateChange = { enginState = enginState.toggle() }
-            )
+            Engine(enginState)
         }
 
         Box(
