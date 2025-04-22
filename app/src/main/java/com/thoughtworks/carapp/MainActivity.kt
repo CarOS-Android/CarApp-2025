@@ -1,7 +1,6 @@
 package com.thoughtworks.carapp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowInsets
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,22 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.main.MainScreen
 import com.thoughtworks.carapp.ui.setting.SettingScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var carService: CarService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        carService = CarService(this)
-        carService.connect()
-
-        // 获取并打印点火状态
-        val ignitionState = carService.getIgnitionState()
-        Log.d("MainActivity", "Ignition State: $ignitionState")
 
         window.decorView.windowInsetsController?.hide(WindowInsets.Type.navigationBars())
         window.decorView.windowInsetsController?.hide(WindowInsets.Type.statusBars())
@@ -89,7 +81,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        carService.disconnect()
     }
 }
 

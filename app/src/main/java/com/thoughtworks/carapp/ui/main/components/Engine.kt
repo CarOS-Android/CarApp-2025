@@ -7,7 +7,7 @@ import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
-fun Engine(state : Toggle) {
+fun Engine(state: Toggle) {
     Image(
         painter = when (state) {
             Toggle.Off -> painterResource(id = R.drawable.engine_off)

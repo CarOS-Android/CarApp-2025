@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.dagger.hilt)
+    kotlin("kapt")
+
 }
 
 android {
@@ -43,6 +46,12 @@ android {
 dependencies {
     implementation("com.thoughtworks.blindhmi:ui:1.0.11")
     implementation(files("libs/android.car.jar"))
+    // Hilt 核心库
+    implementation (libs.dagger.hilt.android)
+    implementation(libs.dagger.hilt.android)
+    // Hilt 编译器
+    kapt (libs.dagger.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,6 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
