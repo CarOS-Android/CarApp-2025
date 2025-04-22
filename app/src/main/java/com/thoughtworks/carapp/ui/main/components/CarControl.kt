@@ -10,20 +10,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.main.CarViewModel
 import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
 fun CarControl() {
-    var enginState by remember { mutableStateOf(Toggle.Off) }
+    val viewModel: CarViewModel = viewModel()
+    val engineState by viewModel.engineState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -34,7 +36,7 @@ fun CarControl() {
                 .fillMaxSize(),
             contentAlignment = Alignment.CenterEnd
         ) {
-            Engine(enginState)
+            Engine(engineState)
         }
 
         Box(
@@ -43,7 +45,7 @@ fun CarControl() {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CenterCar(enginState)
+            CenterCar(engineState)
         }
 
         Row(
