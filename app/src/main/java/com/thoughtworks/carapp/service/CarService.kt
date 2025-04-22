@@ -7,8 +7,12 @@ import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
 import android.content.Context
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class CarService(private val context: Context) {
+class CarService @Inject constructor(
+    @ApplicationContext private val context: Context // 使用Hilt提供的上下文
+) {
     private var car: Car? = null
     private var carPropertyManager: CarPropertyManager? = null
     private var ignitionStateChangeListener: ((Int) -> Unit)? = null

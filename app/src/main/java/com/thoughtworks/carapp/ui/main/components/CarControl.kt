@@ -16,14 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
 fun CarControl() {
-    val viewModel: CarViewModel = viewModel()
+    val viewModel: CarViewModel = hiltViewModel() // 改为使用hiltViewModel
     val engineState by viewModel.engineState.collectAsState()
 
     Column(
