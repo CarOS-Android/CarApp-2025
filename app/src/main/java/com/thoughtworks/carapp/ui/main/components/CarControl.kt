@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thoughtworks.carapp.R
-import com.thoughtworks.carapp.ui.main.CarViewModel
+import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable

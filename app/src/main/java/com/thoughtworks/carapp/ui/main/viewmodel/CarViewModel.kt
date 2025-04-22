@@ -1,10 +1,11 @@
-package com.thoughtworks.carapp.ui.main
+package com.thoughtworks.carapp.ui.main.viewmodel
 
 import android.app.Application
 import android.car.VehicleIgnitionState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thoughtworks.carapp.service.CarService
+import com.thoughtworks.carapp.ui.main.Toggle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
