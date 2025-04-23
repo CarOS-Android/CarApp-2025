@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,6 +27,7 @@ import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 fun CarControl(viewModel: CarViewModel) {
     val engineState by viewModel.engineState.collectAsState()
     val autoHoldState by viewModel.autoHoldState.collectAsState()
+    val parkingBrakeState by remember { mutableStateOf(Toggle.Off) }
 
     Column(
         modifier = Modifier
@@ -50,6 +54,7 @@ fun CarControl(viewModel: CarViewModel) {
         Row(
             modifier = Modifier
                 .weight(0.3f)
+                .padding(0.dp, 0.dp, 0.dp, 50.dp)
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,13 +63,19 @@ fun CarControl(viewModel: CarViewModel) {
                     .weight(7f)
             ) {
             }
-            Row(
+            Box(
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
+                contentAlignment = Alignment.Center
             ) {
-                AutoHoldComponent(autoHoldState)
+                Row(modifier = Modifier.offset(y = (-60).dp)) {
+                    ParkingBrake(parkingBrakeState)
+                }
+
+                Row(modifier = Modifier.offset(y = 60.dp)) {
+                    AutoHoldComponent(autoHoldState)
+                }
             }
         }
     }
