@@ -23,6 +23,7 @@ import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 @Composable
 fun CarControl(viewModel: CarViewModel) {
     val engineState by viewModel.engineState.collectAsState()
+    val autoHoldState by viewModel.autoHoldState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -63,7 +64,7 @@ fun CarControl(viewModel: CarViewModel) {
                     .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AutoHoldComponent()
+                AutoHoldComponent(autoHoldState)
             }
         }
     }

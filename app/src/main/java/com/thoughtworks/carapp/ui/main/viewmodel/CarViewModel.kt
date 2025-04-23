@@ -17,6 +17,9 @@ class CarViewModel @Inject constructor(
     private val _engineState = MutableStateFlow(Toggle.Off)
     val engineState: StateFlow<Toggle> = _engineState.asStateFlow()
 
+    private val _autoHoldState = MutableStateFlow(Toggle.Off)
+    val autoHoldState: StateFlow<Toggle> = _autoHoldState.asStateFlow()
+
     init {
         connectToCar()
     }
