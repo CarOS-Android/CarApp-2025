@@ -24,24 +24,23 @@ class CarViewModel @Inject constructor(
     private val _parkingBrakeOnState = MutableStateFlow(Toggle.Off)
     val parkingBrakeOnState: StateFlow<Toggle> = _parkingBrakeOnState.asStateFlow()
 
-    private var propertyCallbacks: List<Map<Int, (Any) -> Unit>> = mutableListOf()
+    private var propertyCallbacks: List<CarService.PropertyCallback> = mutableListOf()
 
     init {
         connectToCar()
     }
 
     private fun connectToCar() {
-        this.propertyCallbacks = listOf<Map<Int, (Any) -> Unit>>(
-            mapOf<Int, (Any) -> Unit>(
-                VehiclePropertyIds.IGNITION_STATE to { value ->
-                    _engineState.value = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
-                },
-                VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY to { value ->
-                    _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
-                },
-                VehiclePropertyIds.PARKING_BRAKE_ON to { value ->
-                    _parkingBrakeOnState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
-                })
+        this.propertyCallbacks = listOf(
+            CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, { value ->
+                _engineState.value = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
+            }),
+            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY, { value ->
+                _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
+            }),
+            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, { value ->
+                _parkingBrakeOnState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
+            }),
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }

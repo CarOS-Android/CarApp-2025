@@ -4,7 +4,6 @@ import android.car.Car
 import android.car.VehiclePropertyIds
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
-import android.car.hardware.property.CarPropertyManager.CarPropertyEventCallback
 import android.car.hardware.property.Subscription
 import android.content.Context
 import android.util.Log
@@ -19,7 +18,7 @@ class CarService @Inject constructor(
     private var car: Car? = null
     private var carPropertyManager: CarPropertyManager? = null
     private var ignitionStateChangeListener: ((Int) -> Unit)? = null
-    private var propertyCallbacks: MutableList<Map<Int, (Any) -> Unit>> = mutableListOf()
+    private var propertyCallbacks: MutableList<PropertyCallback> = mutableListOf()
 
     fun connect() {
         car = Car.createCar(context)
@@ -46,19 +45,17 @@ class CarService @Inject constructor(
         )
     }
 
-    fun registerPropertyListeners(callbacks: List<Map<Int, (Any) -> Unit>>) {
-        val subscriptions: List<Subscription> = callbacks.flatMap { callback ->
-            callback.keys.map { propertyId ->
-                Subscription.Builder(propertyId)
-                    .build()
-            }
+    fun registerPropertyListeners(callbacks: List<PropertyCallback>) {
+        val subscriptions: List<Subscription> = callbacks.map { callback ->
+            Subscription.Builder(callback.propertyId)
+                .build()
         }
 
         carPropertyManager?.subscribePropertyEvents(subscriptions, null, commonCallback)
         propertyCallbacks.addAll(callbacks)
     }
 
-    fun unregisterPropertyListeners(callbacks: List<Map<Int, (Any) -> Unit>>) {
+    fun unregisterPropertyListeners(callbacks: List<PropertyCallback>) {
         callbacks.forEach { callback ->
             propertyCallbacks.remove(callback)
         }
@@ -88,13 +85,19 @@ class CarService @Inject constructor(
 
     private val commonCallback = object : CarPropertyManager.CarPropertyEventCallback {
         override fun onChangeEvent(value: CarPropertyValue<Any?>) {
-            propertyCallbacks.forEach { callback ->
-                callback[value.propertyId]?.invoke(value.value)
-            }
+            propertyCallbacks
+                .filter { callback ->
+                    callback.propertyId == value.propertyId
+                }
+                .forEach { callback ->
+                    callback.onChange.invoke(value.value)
+                }
         }
 
         override fun onErrorEvent(propId: Int, zone: Int) {
             Log.e("CarService", "Error listening to IGNITION_STATE")
         }
     }
+
+    class PropertyCallback(val propertyId: Int, val onChange: (Any) -> Unit)
 }
