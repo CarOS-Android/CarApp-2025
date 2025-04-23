@@ -11,12 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
+import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 
 @Composable
 fun MainScreen() {
     // 获取车辆信息Car
+    val viewModel: CarViewModel = hiltViewModel() // 改为使用hiltViewModel
     Row(
         modifier = Modifier
             .fillMaxSize(),
@@ -25,7 +28,7 @@ fun MainScreen() {
         Box(
             modifier = Modifier
                 .weight(0.6f)
-        ) { CarControl() }
+        ) { CarControl(viewModel) }
         Spacer(modifier = Modifier.width(40.dp))
         Box(
             modifier = Modifier

@@ -16,14 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.Toggle
 import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 
 @Composable
-fun CarControl() {
-    val viewModel: CarViewModel = hiltViewModel() // 改为使用hiltViewModel
+fun CarControl(viewModel: CarViewModel) {
     val engineState by viewModel.engineState.collectAsState()
 
     Column(
@@ -54,7 +52,7 @@ fun CarControl() {
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row (
+            Row(
                 modifier = Modifier
                     .weight(7f)
             ) {
