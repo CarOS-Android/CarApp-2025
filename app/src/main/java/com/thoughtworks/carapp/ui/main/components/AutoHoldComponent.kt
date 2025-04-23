@@ -16,7 +16,7 @@ import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.Toggle
 
 @Composable
-fun AutoholdComponent () {
+fun AutoHoldComponent () {
     var autoHold by remember { mutableStateOf(Toggle.Off) }
 
     IconButton(
@@ -37,6 +37,6 @@ fun AutoholdComponent () {
 
 @Preview
 @Composable
-fun PreviewAutoholdComponent() {
-    AutoholdComponent()
+fun PreviewAutoHoldComponent() {
+    AutoHoldComponent()
 }

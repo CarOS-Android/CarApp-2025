@@ -63,7 +63,7 @@ fun CarControl(viewModel: CarViewModel) {
                     .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AutoholdComponent()
+                AutoHoldComponent()
             }
         }
     }
