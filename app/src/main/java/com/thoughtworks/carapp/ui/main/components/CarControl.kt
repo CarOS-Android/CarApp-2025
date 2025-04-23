@@ -119,25 +119,3 @@ fun CenterEnginOn() {
     }
 }
 
-@Composable
-private fun CarLight() {
-    // todo 后续可以根据车灯的状态来展示具体的车灯图片
-    Image(
-        painter = painterResource(id = R.drawable.light1_off),
-        modifier = Modifier.width(85.dp),
-        contentDescription = null
-    )
-    Spacer(modifier = Modifier.width(32.dp))
-    Image(
-        painter = painterResource(id = R.drawable.light2_off),
-        modifier = Modifier.width(85.dp),
-        contentDescription = null
-    )
-    Spacer(modifier = Modifier.width(32.dp))
-    Image(
-        painter = painterResource(id = R.drawable.light3_off),
-        modifier = Modifier.width(85.dp),
-        contentDescription = null
-    )
-}
-
