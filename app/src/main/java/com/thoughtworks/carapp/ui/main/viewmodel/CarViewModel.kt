@@ -28,9 +28,7 @@ class CarViewModel @Inject constructor(
     private fun connectToCar() {
         carService.connect()
         carService.registerIgnitionStateListener { state ->
-            viewModelScope.launch {
-                _engineState.value = if (state == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
-            }
+            _engineState.value = if (state == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
         }
     }
 
