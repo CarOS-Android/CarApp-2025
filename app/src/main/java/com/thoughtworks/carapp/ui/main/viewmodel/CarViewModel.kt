@@ -21,6 +21,9 @@ class CarViewModel @Inject constructor(
     private val _autoHoldState = MutableStateFlow(Toggle.Off)
     val autoHoldState: StateFlow<Toggle> = _autoHoldState.asStateFlow()
 
+    private val _parkingBrakeOnState = MutableStateFlow(Toggle.Off)
+    val parkingBrakeOnState: StateFlow<Toggle> = _parkingBrakeOnState.asStateFlow()
+
     private var propertyCallbacks: List<Map<Int, (Any) -> Unit>> = mutableListOf()
 
     init {
@@ -37,7 +40,7 @@ class CarViewModel @Inject constructor(
                     _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
                 },
                 VehiclePropertyIds.PARKING_BRAKE_ON to { value ->
-
+                    _parkingBrakeOnState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
                 })
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
