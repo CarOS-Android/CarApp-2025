@@ -3,6 +3,7 @@ package com.thoughtworks.carapp.ui.main.viewmodel
 import android.car.VehicleAreaType
 import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.main.Toggle
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class CarViewModel @Inject constructor(
@@ -71,6 +73,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHazardLights() {
+        Log.d("clickable", "begin to switch the toggle for toggleHazardLights")
+        Log.d("clickable", "current hazardLightsState is $_hazardLightsState")
         val newState = if (_hazardLightsState.value == Toggle.On) {
             Toggle.Off
         } else {
@@ -81,6 +85,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHighBeamLights() {
+        Log.d("clickable", "begin to switch the toggle for toggleHighBeamLights")
+        Log.d("clickable", "current highBeamState is $_highBeamState")
         val newState = if (_highBeamState.value == Toggle.On) {
             Toggle.Off
         } else {
@@ -91,6 +97,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHeadLights() {
+        Log.d("clickable", "begin to switch the toggle for toggleHeadLights")
+        Log.d("clickable", "current headLightsState is $_headLightsState")
         val newState = if (_headLightsState.value == Toggle.On) {
             Toggle.Off
         } else {

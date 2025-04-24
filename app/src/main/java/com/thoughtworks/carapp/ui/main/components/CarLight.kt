@@ -1,5 +1,6 @@
 package com.thoughtworks.carapp.ui.main.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +27,10 @@ fun CarLight(viewModel: CarViewModel) {
         },
         modifier = Modifier
             .width(85.dp)
-            .clickable { viewModel.toggleHazardLights() },
+            .clickable {
+                Log.d("clickable", "begin to change the switch")
+                viewModel.toggleHazardLights()
+                       },
         contentDescription = null
     )
     Spacer(modifier = Modifier.width(32.dp))
