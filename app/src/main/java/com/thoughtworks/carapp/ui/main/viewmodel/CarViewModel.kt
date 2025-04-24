@@ -73,8 +73,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHazardLights() {
-        Log.d("clickable", "begin to switch the toggle for toggleHazardLights")
-        Log.d("clickable", "current hazardLightsState is $_hazardLightsState")
+        Log.d("huoxiaolu", "begin to switch the toggle for toggleHazardLights")
+        Log.d("huoxiaolu", "current hazardLightsState is $_hazardLightsState")
         val newState = if (_hazardLightsState.value == Toggle.On) {
             Toggle.Off
         } else {
@@ -85,8 +85,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHighBeamLights() {
-        Log.d("clickable", "begin to switch the toggle for toggleHighBeamLights")
-        Log.d("clickable", "current highBeamState is $_highBeamState")
+        Log.d("huoxiaolu", "begin to switch the toggle for toggleHighBeamLights")
+        Log.d("huoxiaolu", "current highBeamState is $_highBeamState")
         val newState = if (_highBeamState.value == Toggle.On) {
             Toggle.Off
         } else {
@@ -97,8 +97,8 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleHeadLights() {
-        Log.d("clickable", "begin to switch the toggle for toggleHeadLights")
-        Log.d("clickable", "current headLightsState is $_headLightsState")
+        Log.d("huoxiaolu", "begin to switch the toggle for toggleHeadLights")
+        Log.d("huoxiaolu", "current headLightsState is $_headLightsState")
         val newState = if (_headLightsState.value == Toggle.On) {
             Toggle.Off
         } else {

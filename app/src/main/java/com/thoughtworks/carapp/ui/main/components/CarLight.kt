@@ -28,7 +28,7 @@ fun CarLight(viewModel: CarViewModel) {
         modifier = Modifier
             .width(85.dp)
             .clickable {
-                Log.d("clickable", "begin to change the switch")
+                Log.d("huoxiaolu", "begin to change the switch")
                 viewModel.toggleHazardLights()
                        },
         contentDescription = null
