@@ -4,14 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.main.Toggle
+import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 
 @Composable
-fun CarLight() {
-    // todo 后续可以根据车灯的状态来展示具体的车灯图片
+fun CarLight(viewModel: CarViewModel) {
+    val highBeamState by viewModel.highBeamState.collectAsState()
     Image(
         painter = painterResource(id = R.drawable.light1_off),
         modifier = Modifier.width(85.dp),
@@ -25,7 +29,10 @@ fun CarLight() {
     )
     Spacer(modifier = Modifier.width(32.dp))
     Image(
-        painter = painterResource(id = R.drawable.light3_off),
+        painter = when (highBeamState) {
+            Toggle.Off -> painterResource(id = R.drawable.light3_off)
+            Toggle.On -> painterResource(id = R.drawable.light3_on)
+        },
         modifier = Modifier.width(85.dp),
         contentDescription = null
     )

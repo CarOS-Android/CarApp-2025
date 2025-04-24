@@ -60,7 +60,7 @@ class CarService @Inject constructor(
             propertyCallbacks.remove(callback)
         }
 
-        if(propertyCallbacks.size == 0) {
+        if (propertyCallbacks.size == 0) {
             carPropertyManager?.unsubscribePropertyEvents(commonCallback)
         }
     }
@@ -100,4 +100,19 @@ class CarService @Inject constructor(
     }
 
     class PropertyCallback(val propertyId: Int, val onChange: (Any) -> Unit)
+
+    /**
+     * 设置车辆属性的通用方法
+     * @param clazz 属性值类型
+     * @param propertyId 属性ID
+     * @param value 属性值
+     * @param areaId 区域ID
+     */
+    fun <E> setProperty(clazz: Class<E>, propertyId: Int, areaId: Int, value: E & Any) {
+        try {
+            carPropertyManager?.setProperty(clazz, propertyId, areaId, value)
+        } catch (e: Exception) {
+            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
+        }
+    }
 }

@@ -47,7 +47,7 @@ fun CarControl(viewModel: CarViewModel) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CenterCar(engineState)
+            CenterCar(engineState, viewModel)
         }
 
         Row(
@@ -81,9 +81,9 @@ fun CarControl(viewModel: CarViewModel) {
 }
 
 @Composable
-fun CenterCar(state: Toggle) {
+fun CenterCar(state: Toggle, viewModel: CarViewModel) {
     if (state == Toggle.On) {
-        CenterEnginOn()
+        CenterEnginOn(viewModel)
     } else {
         Box (
             modifier = Modifier
@@ -131,7 +131,7 @@ fun previewCenterCar(){
 }
 
 @Composable
-fun CenterEnginOn() {
+fun CenterEnginOn(viewModel: CarViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -150,7 +150,7 @@ fun CenterEnginOn() {
                     .align(Alignment.BottomCenter)
             )
             {
-                CarLight()
+                CarLight(viewModel)
             }
         }
     }
