@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="com.thoughtworks.carapp">
+        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+        <permission name="android.car.permission.CAR_EXTERIOR_LIGHTS"/>
+        <permission name="android.car.permission.CONTROL_CAR_EXTERIOR_LIGHTS"/>
+        <permission name="android.car.permission.CONTROL_CAR_DOORS"/>
+    </privapp-permissions>
+</permissions>

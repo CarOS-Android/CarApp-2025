@@ -11,6 +11,17 @@ android {
     namespace = "com.thoughtworks.carapp"
     compileSdk = 35
 
+    signingConfigs {
+        create("platform") {
+            storeFile = file("${rootDir.path}/app/keystore/platform.keystore")
+            storePassword = "123456"
+            keyAlias = "platform"
+            keyPassword = "123456"
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+    }
+
     defaultConfig {
         applicationId = "com.thoughtworks.carapp"
         minSdk = 35
@@ -23,7 +34,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("platform")
+        }
         release {
+            signingConfig = signingConfigs.findByName("platform")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
