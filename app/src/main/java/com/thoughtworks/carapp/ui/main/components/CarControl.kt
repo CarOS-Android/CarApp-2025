@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -46,7 +45,7 @@ fun CarControl(viewModel: CarViewModel) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CenterCar(engineState)
+            CenterCar(engineState, viewModel)
         }
 
         Row(
@@ -80,9 +79,9 @@ fun CarControl(viewModel: CarViewModel) {
 }
 
 @Composable
-fun CenterCar(state: Toggle) {
+fun CenterCar(state: Toggle, viewModel: CarViewModel) {
     if (state == Toggle.On) {
-        CenterEnginOn()
+        CenterEnginOn(viewModel)
     } else {
         Image(
             painter = painterResource(id = R.drawable.car2),
@@ -94,7 +93,7 @@ fun CenterCar(state: Toggle) {
 }
 
 @Composable
-fun CenterEnginOn() {
+fun CenterEnginOn(viewModel: CarViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -113,7 +112,7 @@ fun CenterEnginOn() {
                     .align(Alignment.BottomCenter)
             )
             {
-                CarLight()
+                CarLight(viewModel)
             }
         }
     }
