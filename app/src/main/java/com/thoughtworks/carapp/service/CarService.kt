@@ -65,6 +65,10 @@ class CarService @Inject constructor(
         }
     }
 
+    fun <E> getProperty(propertyId: Int, areaId: Int) : E? {
+        return carPropertyManager?.getProperty<E>(propertyId, areaId)?.value
+    }
+
     fun unregisterIgnitionStateListener() {
         carPropertyManager?.unsubscribePropertyEvents(ignitionCallback)
         ignitionStateChangeListener = null

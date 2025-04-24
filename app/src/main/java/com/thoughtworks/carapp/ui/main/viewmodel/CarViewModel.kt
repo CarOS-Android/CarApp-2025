@@ -40,6 +40,10 @@ class CarViewModel @Inject constructor(
     private val _headLightsState = MutableStateFlow(Toggle.Off)
     val headLightsState: StateFlow<Toggle> = _headLightsState.asStateFlow()
 
+    // 门锁状态
+    private val _carLockState = MutableStateFlow(Toggle.Off)
+    val carLockState: StateFlow<Toggle> = _carLockState.asStateFlow()
+
     private var propertyCallbacks: List<CarService.PropertyCallback> = mutableListOf()
 
     init {
@@ -65,6 +69,9 @@ class CarViewModel @Inject constructor(
             }),
             CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, { value ->
                 _headLightsState.value = if (value == 1) Toggle.On else Toggle.Off
+            }),
+            CarService.PropertyCallback(VehiclePropertyIds.DOOR_LOCK, { value ->
+                _carLockState.value = if (value as? Boolean == true) Toggle.Off else Toggle.On
             }),
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
@@ -98,6 +105,20 @@ class CarViewModel @Inject constructor(
         }
         _headLightsState.value = newState
         setHeadLights(newState.toIntValue())
+    }
+
+    fun toggleCarLock() {
+        val newValue = if (_carLockState.value == Toggle.On) {
+            true
+        } else {
+            false
+        }
+        carService.setProperty(
+            Boolean::class.java,
+            VehiclePropertyIds.DOOR_LOCK,
+            VehicleAreaType.VEHICLE_AREA_TYPE_DOOR,
+            newValue
+        )
     }
 
     // 将 Toggle 转换为 Int

@@ -101,7 +101,7 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
                     .align(Alignment.BottomCenter)
                     .offset(x = 0.dp, y = 27.dp),
             ) {
-                CarLockButton()
+                CarLockButton(viewModel)
             }
             Box (
                 modifier = Modifier
