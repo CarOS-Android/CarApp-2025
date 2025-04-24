@@ -19,18 +19,23 @@ class CarViewModel @Inject constructor(
     // 车辆引擎状态
     private val _engineState = MutableStateFlow(Toggle.Off)
     val engineState: StateFlow<Toggle> = _engineState.asStateFlow()
+
     // 自动驻车
     private val _autoHoldState = MutableStateFlow(Toggle.Off)
     val autoHoldState: StateFlow<Toggle> = _autoHoldState.asStateFlow()
+
     // 刹车状态
     private val _parkingBrakeOnState = MutableStateFlow(Toggle.Off)
     val parkingBrakeOnState: StateFlow<Toggle> = _parkingBrakeOnState.asStateFlow()
+
     // 远光灯
     private val _highBeamState = MutableStateFlow(Toggle.Off)
     val highBeamState: StateFlow<Toggle> = _highBeamState.asStateFlow()
+
     // 危险信号灯-示宽灯
     private val _hazardLightsState = MutableStateFlow(Toggle.Off)
     val hazardLightsState: StateFlow<Toggle> = _hazardLightsState.asStateFlow()
+
     // 车前灯-近光灯
     private val _headLightsState = MutableStateFlow(Toggle.Off)
     val headLightsState: StateFlow<Toggle> = _headLightsState.asStateFlow()
@@ -65,16 +70,67 @@ class CarViewModel @Inject constructor(
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
 
+    fun toggleHazardLights() {
+        val newState = if (_hazardLightsState.value == Toggle.On) {
+            Toggle.Off
+        } else {
+            Toggle.On
+        }
+        _hazardLightsState.value = newState
+        setHazardLights(newState.toIntValue())
+    }
+
+    fun toggleHighBeamLights() {
+        val newState = if (_highBeamState.value == Toggle.On) {
+            Toggle.Off
+        } else {
+            Toggle.On
+        }
+        _highBeamState.value = newState
+        setHighBeamLights(newState.toIntValue())
+    }
+
+    fun toggleHeadLights() {
+        val newState = if (_headLightsState.value == Toggle.On) {
+            Toggle.Off
+        } else {
+            Toggle.On
+        }
+        _headLightsState.value = newState
+        setHeadLights(newState.toIntValue())
+    }
+
+    // 将 Toggle 转换为 Int
+    private fun Toggle.toIntValue() = when (this) {
+        Toggle.On -> 1
+        Toggle.Off -> 0
+    }
+
     private fun setHighBeamLights(value: Int) {
-        carService.setProperty(Int::class.java, VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH, VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL, value)
+        carService.setProperty(
+            Int::class.java,
+            VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH,
+            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
+            value
+        )
     }
 
     private fun setHazardLights(value: Int) {
-        carService.setProperty(Int::class.java, VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL, value)
+        carService.setProperty(
+            Int::class.java,
+            VehiclePropertyIds.HAZARD_LIGHTS_SWITCH,
+            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
+            value
+        )
     }
 
     private fun setHeadLights(value: Int) {
-        carService.setProperty(Int::class.java, VehiclePropertyIds.HEADLIGHTS_SWITCH, VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL, value)
+        carService.setProperty(
+            Int::class.java,
+            VehiclePropertyIds.HEADLIGHTS_SWITCH,
+            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
+            value
+        )
     }
 
     override fun onCleared() {

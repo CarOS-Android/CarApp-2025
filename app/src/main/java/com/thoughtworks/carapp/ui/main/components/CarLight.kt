@@ -1,6 +1,7 @@
 package com.thoughtworks.carapp.ui.main.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -23,7 +24,9 @@ fun CarLight(viewModel: CarViewModel) {
             Toggle.Off -> painterResource(id = R.drawable.light1_off)
             Toggle.On -> painterResource(id = R.drawable.light1_on)
         },
-        modifier = Modifier.width(85.dp),
+        modifier = Modifier
+            .width(85.dp)
+            .clickable { viewModel.toggleHazardLights() },
         contentDescription = null
     )
     Spacer(modifier = Modifier.width(32.dp))
@@ -32,7 +35,9 @@ fun CarLight(viewModel: CarViewModel) {
             Toggle.Off -> painterResource(id = R.drawable.light2_off)
             Toggle.On -> painterResource(id = R.drawable.light2_on)
         },
-        modifier = Modifier.width(85.dp),
+        modifier = Modifier
+            .width(85.dp)
+            .clickable { viewModel.toggleHeadLights() },
         contentDescription = null
     )
     Spacer(modifier = Modifier.width(32.dp))
@@ -41,7 +46,9 @@ fun CarLight(viewModel: CarViewModel) {
             Toggle.Off -> painterResource(id = R.drawable.light3_off)
             Toggle.On -> painterResource(id = R.drawable.light3_on)
         },
-        modifier = Modifier.width(85.dp),
+        modifier = Modifier
+            .width(85.dp)
+            .clickable { viewModel.toggleHighBeamLights() },
         contentDescription = null
     )
 }
