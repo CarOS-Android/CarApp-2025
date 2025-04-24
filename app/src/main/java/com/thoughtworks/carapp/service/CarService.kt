@@ -95,7 +95,7 @@ class CarService @Inject constructor(
         }
 
         override fun onErrorEvent(propId: Int, zone: Int) {
-            Log.e("CarService", "Error listening to IGNITION_STATE")
+            Log.e("CarService", "Error listening to $propId")
         }
     }
 
