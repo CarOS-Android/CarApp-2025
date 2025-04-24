@@ -126,8 +126,11 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
     heightDp = 220
 )
 @Composable
-fun previewCenterCar(){
-    CenterCar(Toggle.Off)
+fun PreviewCenterCar(){
+    CenterCar(
+        Toggle.Off,
+        viewModel = TODO()
+    )
 }
 
 @Composable

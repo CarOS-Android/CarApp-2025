@@ -16,14 +16,22 @@ import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 @Composable
 fun CarLight(viewModel: CarViewModel) {
     val highBeamState by viewModel.highBeamState.collectAsState()
+    val hazardLightState by viewModel.hazardLightsState.collectAsState()
+    val headLightsState by viewModel.headLightsState.collectAsState()
     Image(
-        painter = painterResource(id = R.drawable.light1_off),
+        painter = when (hazardLightState) {
+            Toggle.Off -> painterResource(id = R.drawable.light1_off)
+            Toggle.On -> painterResource(id = R.drawable.light1_on)
+        },
         modifier = Modifier.width(85.dp),
         contentDescription = null
     )
     Spacer(modifier = Modifier.width(32.dp))
     Image(
-        painter = painterResource(id = R.drawable.light2_off),
+        painter = when (headLightsState) {
+            Toggle.Off -> painterResource(id = R.drawable.light2_off)
+            Toggle.On -> painterResource(id = R.drawable.light2_on)
+        },
         modifier = Modifier.width(85.dp),
         contentDescription = null
     )
