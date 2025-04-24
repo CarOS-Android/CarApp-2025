@@ -1,22 +1,13 @@
 package com.thoughtworks.carapp.ui.main.components
 
-import android.util.Log
-import android.widget.Button
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.R
@@ -36,7 +27,6 @@ fun CarLight(viewModel: CarViewModel) {
         modifier = Modifier
             .width(85.dp)
             .clickable {
-                Log.d("huoxiaolu", "begin to change the switch")
                 viewModel.toggleHazardLights()
                        },
         contentDescription = null
@@ -63,13 +53,4 @@ fun CarLight(viewModel: CarViewModel) {
             .clickable { viewModel.toggleHighBeamLights() },
         contentDescription = null
     )
-
-    Button(
-        onClick = {
-            Log.d("huoxiaolu", "测试button点击事件")
-            viewModel.toggleHazardLights()
-        }
-    ) {
-        Text("你好！！！！", color = Color.Red)
-    }
 }
