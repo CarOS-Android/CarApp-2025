@@ -40,5 +40,6 @@
     <uses-permission android:name="android.car.permission.CAR_EXTERIOR_LIGHTS" />
     <uses-permission android:name="android.car.permission.CONTROL_CAR_EXTERIOR_LIGHTS" />
     <uses-permission android:name="android.car.permission.CONTROL_CAR_DOORS" />
+    <uses-permission android:name="android.car.permission.CONTROL_CAR_CLIMATE" />
 
 </manifest>

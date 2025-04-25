@@ -29,41 +29,6 @@ class CarService @Inject constructor(
         carPropertyManager = null
     }
 
-    /**
-     * 设置车辆属性的通用方法
-     * @param clazz 属性值类型
-     * @param propertyId 属性ID
-     * @param value 属性值
-     * @param areaId 区域ID
-     */
-    fun <E> setProperty(clazz: Class<E>, propertyId: Int, areaId: Int, value: E & Any) {
-        try {
-            carPropertyManager?.setProperty(clazz, propertyId, areaId, value)
-        } catch (e: Exception) {
-            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
-        }
-    }
-
-    /**
-     * 设置车辆属性，并且给多个区域设置同样的值
-     * @param propertyId 属性ID
-     * @param areaIds 区域ID数组
-     * @param value 属性值
-     */
-    fun <Value : Any> setPropertyForMultipleAreas(
-        propertyId: Int,
-        areaIds: List<Int>,
-        value: Value
-    ) {
-        try {
-            areaIds.forEach { id ->
-                carPropertyManager?.setProperty(value.javaClass, propertyId, id, value)
-            }
-        } catch (e: Exception) {
-            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
-        }
-    }
-
     fun registerPropertyListeners(callbacks: List<PropertyCallback>) {
         val subscriptions: List<Subscription> = callbacks.map { callback ->
             Subscription.Builder(callback.propertyId)
@@ -115,4 +80,47 @@ class CarService @Inject constructor(
         val areaIds: List<Int>?,
         val onChange: (Any, Int) -> Unit
     )
+
+    /**
+     * 设置车辆属性的通用方法
+     * @param clazz 属性值类型
+     * @param propertyId 属性ID
+     * @param value 属性值
+     * @param areaId 区域ID
+     */
+    fun <E> setProperty(clazz: Class<E>, propertyId: Int, areaId: Int, value: E & Any) {
+        try {
+            carPropertyManager?.setProperty(clazz, propertyId, areaId, value)
+        } catch (e: Exception) {
+            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
+        }
+    }
+
+    /**
+     * 设置车辆属性的通用方法
+     * @param propertyId 属性ID
+     * @param value 属性值
+     * @param areaId 区域ID
+     */
+    fun <E> setProperty(propertyId: Int, areaId: Int, value: E & Any) {
+        try {
+            carPropertyManager?.setProperty(value.javaClass, propertyId, areaId, value)
+        } catch (e: Exception) {
+            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
+        }
+    }
+
+    fun <Value : Any> setPropertyForMultipleAreas(
+        propertyId: Int,
+        areaIds: List<Int>,
+        value: Value
+    ) {
+        try {
+            areaIds.forEach { id ->
+                carPropertyManager?.setProperty(value.javaClass, propertyId, id, value)
+            }
+        } catch (e: Exception) {
+            Log.e("CarService", "Error setting property $propertyId: ${e.message}")
+        }
+    }
 }

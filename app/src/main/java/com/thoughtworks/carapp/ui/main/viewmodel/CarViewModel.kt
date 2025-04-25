@@ -1,9 +1,11 @@
 package com.thoughtworks.carapp.ui.main.viewmodel
 
 import android.car.VehicleAreaDoor
+import android.car.VehicleAreaSeat
 import android.car.VehicleAreaType
 import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.main.Lock
@@ -41,6 +43,10 @@ class CarViewModel @Inject constructor(
     // 车前灯-近光灯
     private val _headLightsState = MutableStateFlow(Toggle.Off)
     val headLightsState: StateFlow<Toggle> = _headLightsState.asStateFlow()
+
+    // 主驾-空调温度
+    private val _diverTemperature = MutableStateFlow(0.0f)
+    val diverTemperature: StateFlow<Float> = _diverTemperature.asStateFlow()
 
     // 门锁状态
     private val _carLockState = MutableStateFlow(Lock.Locked)
@@ -98,8 +104,18 @@ class CarViewModel @Inject constructor(
                 doorStates[areaId] = if (value as? Boolean == true) Lock.Locked else Lock.Unlocked
                 _carLockState.value = doorStates.values.reduce { acc, b -> acc or b }
             },
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_TEMPERATURE_SET,
+                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT)
+            ) { value, _ ->
+                _diverTemperature.value = value as Float
+            },
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
+    }
+
+    fun setDiverTemperature(value: Float) {
+        carService.setProperty(VehiclePropertyIds.HVAC_TEMPERATURE_SET, VehicleAreaSeat.SEAT_ROW_1_LEFT, value)
     }
 
     fun toggleHazardLights() {

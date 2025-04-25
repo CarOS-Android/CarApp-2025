@@ -1,21 +1,22 @@
 package com.thoughtworks.carapp.ui.main.components
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,27 +30,29 @@ import com.thoughtworks.blindhmi.ui.utils.moveUp
 import com.thoughtworks.carapp.R
 
 @Composable
-fun AirCondition() {
+fun AirCondition(label: String, currentValue: Float, handleSweepStep: (Float) -> Unit) {
     Column(
-        Modifier.border(width = 1.dp, color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "TemperatureStepperTest", color = Color.White, fontSize = 10.sp)
-
         val isTemperatureDockVisible = remember { mutableStateOf(false) }
-        val text = remember { mutableStateOf("") }
+        var text by remember { mutableFloatStateOf(currentValue) }
+
+        LaunchedEffect(currentValue) {
+            text = currentValue
+        }
 
         ComposeBlindHMILoopStepper(
-            modifier = Modifier.size(dimensionResource(id = R.dimen.dimen_168)),
-            centerHotspotRadius = 36.dp,
-            centerBackgroundRadius = dimensionResource(id = R.dimen.dimen_72),
+            modifier = Modifier.size(100.dp),
+            centerHotspotRadius = 20.dp,
+            centerBackgroundRadius = 50.dp,
             centerBackgroundRes = R.drawable.ic_dock_temperature_bg,
             stepOrientation = CLOCKWISE,
-            steps = 4,
-            currentValue = 2f,
-            minValue = 0f,
-            maxValue = 8f,
-            stepValue = 1f,
+            steps = 12,
+            currentValue = currentValue,
+            minValue = 14f,
+            maxValue = 32f,
+            stepValue = 0.5f,
             startAngle = 0f,
             border = {
                 border(context) {
@@ -63,7 +66,7 @@ fun AirCondition() {
                 indicator(context) {
                     imageRes = R.drawable.ic_pointer_168
                     drawOrder = getDrawOrder() + 1
-                    radius = 72
+                    radius = 54
                     visible = true
                     onActive = {
                         isTemperatureDockVisible.value = true
@@ -78,18 +81,18 @@ fun AirCondition() {
                     contentFactory = {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(180.dp),
+                            modifier = Modifier.size(120.dp),
                         ) {
                             Image(
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.dimen_144)),
+                                modifier = Modifier.size(100.dp),
                                 painter = painterResource(id = R.drawable.ic_dock_temperature_center),
                                 contentDescription = "",
                             )
 
                             Text(
-                                text = text.value.ifEmpty { getCurrentValue().toString() },
+                                text = text.toString(),
                                 color = colorResource(id = R.color.gl_dark_gray_4),
-                                fontSize = 10.sp,
+                                fontSize = 20.sp,
                             )
 
                             if (isTemperatureDockVisible.value) {
@@ -110,13 +113,14 @@ fun AirCondition() {
                 }
             },
             onActive = { moveDown() },
-            onInactive = { moveUp() },
-            onSweepStep = { _, stepperValue ->
-                text.value = stepperValue.toString()
+            onInactive = {
+                moveUp()
+                handleSweepStep(text)
             },
-            onStepHover = { step ->
-                Log.i(TAG, "onStepHover: step = $step")
+            onSweepStep = { _, stepperValue ->
+                text = stepperValue
             },
         )
+        Text(label, color = Color.White)
     }
 }

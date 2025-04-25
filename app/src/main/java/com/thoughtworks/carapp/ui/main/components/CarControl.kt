@@ -65,7 +65,7 @@ fun CarControl(viewModel: CarViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier.weight(7f)) {
-                AcBox()
+                AcBox(viewModel = viewModel)
             }
             Box(
                 modifier = Modifier
@@ -184,7 +184,8 @@ private fun Clock(modifier: Modifier) {
 }
 
 @Composable
-private fun AcBox(modifier: Modifier = Modifier) {
+private fun AcBox(modifier: Modifier = Modifier, viewModel: CarViewModel) {
+    val diverTemperature by viewModel.diverTemperature.collectAsState()
     Box(
         modifier = modifier
             .padding(start = 51.dp)
@@ -202,11 +203,9 @@ private fun AcBox(modifier: Modifier = Modifier) {
         )
 
         Row(modifier = Modifier.padding(22.dp)) {
-            Image(
-                modifier = Modifier.weight(1f),
-                painter = painterResource(id = R.drawable.ic_temp_driver),
-                contentDescription = null
-            )
+            AirCondition(label = "主驾", currentValue = diverTemperature, handleSweepStep = { temp ->
+                viewModel.setDiverTemperature(temp)
+            })
             Image(
                 modifier = Modifier.weight(1f),
                 painter = painterResource(id = R.drawable.ic_fan),
