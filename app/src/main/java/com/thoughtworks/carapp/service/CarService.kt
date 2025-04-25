@@ -128,7 +128,7 @@ class CarService @Inject constructor(
         }
     }
 
-    fun <Value : Any> setPropertyForMutipleAreas(
+    fun <Value : Any> setPropertyForMultipleAreas(
         propertyId: Int,
         areaIds: List<Int>,
         value: Value

@@ -134,7 +134,7 @@ class CarViewModel @Inject constructor(
 
     fun toggleCarLock() {
         val newValue = _carLockState.value.toggle() != Toggle.On
-        carService.setPropertyForMutipleAreas(
+        carService.setPropertyForMultipleAreas(
             VehiclePropertyIds.DOOR_LOCK,
             doorAreaIds,
             newValue
