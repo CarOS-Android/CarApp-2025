@@ -49,3 +49,24 @@ enum class Toggle {
         }
     }
 }
+
+enum class Lock {
+    Locked,
+    Unlocked;
+
+    fun switch(): Lock {
+        return when (this) {
+            Locked -> Unlocked
+            Unlocked -> Locked
+        }
+    }
+
+    infix fun or(other: Lock): Lock {
+        // 如果任何一个是Unlocked，结果就是Unlocked
+        return if (this == Unlocked || other == Unlocked) {
+            Unlocked
+        } else {
+            Locked
+        }
+    }
+}

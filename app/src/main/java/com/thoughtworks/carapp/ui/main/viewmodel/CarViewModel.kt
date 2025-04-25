@@ -6,6 +6,7 @@ import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.carapp.service.CarService
+import com.thoughtworks.carapp.ui.main.Lock
 import com.thoughtworks.carapp.ui.main.Toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,8 +43,8 @@ class CarViewModel @Inject constructor(
     val headLightsState: StateFlow<Toggle> = _headLightsState.asStateFlow()
 
     // 门锁状态
-    private val _carLockState = MutableStateFlow(Toggle.Off)
-    val carLockState: StateFlow<Toggle> = _carLockState.asStateFlow()
+    private val _carLockState = MutableStateFlow(Lock.Locked)
+    val carLockState: StateFlow<Lock> = _carLockState.asStateFlow()
     private val doorAreaIds = listOf(
         VehicleAreaDoor.DOOR_ROW_1_LEFT,
         VehicleAreaDoor.DOOR_ROW_1_RIGHT,
@@ -51,13 +52,13 @@ class CarViewModel @Inject constructor(
         VehicleAreaDoor.DOOR_ROW_2_RIGHT
     )
     private var doorStates = mutableMapOf(
-        VehicleAreaDoor.DOOR_ROW_1_LEFT to false,
-        VehicleAreaDoor.DOOR_ROW_1_RIGHT to false,
-        VehicleAreaDoor.DOOR_ROW_2_LEFT to false,
-        VehicleAreaDoor.DOOR_ROW_2_RIGHT to false,
+        VehicleAreaDoor.DOOR_ROW_1_LEFT to Lock.Locked,
+        VehicleAreaDoor.DOOR_ROW_1_RIGHT to Lock.Locked,
+        VehicleAreaDoor.DOOR_ROW_2_LEFT to Lock.Locked,
+        VehicleAreaDoor.DOOR_ROW_2_RIGHT to Lock.Locked,
     )
 
-    private var propertyCallbacks: List<CarService.PropertyCallback> = mutableListOf()
+    private var propertyCallbacks: List<CarService.PropertyCallback> = listOf()
 
     init {
         connectToCar()
@@ -94,9 +95,8 @@ class CarViewModel @Inject constructor(
                 VehiclePropertyIds.DOOR_LOCK,
                 doorAreaIds
             ) { value, areaId ->
-                doorStates[areaId] = (value as? Boolean) ?: false
-                _carLockState.value =
-                    if (doorStates.values.reduce { acc, b -> acc && b }) Toggle.Off else Toggle.On
+                doorStates[areaId] = if (value as? Boolean == true) Lock.Locked else Lock.Unlocked
+                _carLockState.value = doorStates.values.reduce { acc, b -> acc or b }
             },
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
@@ -133,7 +133,7 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleCarLock() {
-        val newValue = _carLockState.value.toggle() != Toggle.On
+        val newValue = _carLockState.value.switch() != Lock.Unlocked
         carService.setPropertyForMultipleAreas(
             VehiclePropertyIds.DOOR_LOCK,
             doorAreaIds,
