@@ -11,7 +11,7 @@ import com.thoughtworks.carapp.R
 @Composable
 fun TrunkLockButton() {
     Image(
-        painter = painterResource(id = R.drawable.trunk_unlock),
+        painter = painterResource(id = R.drawable.trunk_lock),
         modifier = Modifier
             .size(38.dp, 38.dp),
         contentDescription = null
