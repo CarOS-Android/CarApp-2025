@@ -91,8 +91,8 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
     } else {
         Box(
             modifier = Modifier
-                .width(625.dp)
-                .height(220.dp)
+                .width(531.dp)
+                .height(187.dp)
         ) {
             Image(
                 modifier = Modifier.align(Alignment.TopCenter),
@@ -116,7 +116,7 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = 0.dp, y = (-45).dp),
+                    .offset(x = 0.dp, y = (-30).dp),
             ) {
                 TrunkLockButton()
             }
