@@ -1,5 +1,6 @@
 package com.thoughtworks.carapp.ui.main.components
 
+import android.car.VehicleAreaDoor.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

@@ -1,8 +1,10 @@
 package com.thoughtworks.carapp.ui.main.viewmodel
 
+import android.car.VehicleAreaDoor
 import android.car.VehicleAreaType
 import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.main.Toggle
@@ -52,27 +54,30 @@ class CarViewModel @Inject constructor(
 
     private fun connectToCar() {
         this.propertyCallbacks = listOf(
-            CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, null, { value ->
                 _engineState.value = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY, null, { value ->
                 _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, null, { value ->
                 _parkingBrakeOnState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH, null, { value ->
                 _highBeamState.value = if (value == 1) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, null, { value ->
                 _hazardLightsState.value = if (value == 1) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, null, { value ->
                 _headLightsState.value = if (value == 1) Toggle.On else Toggle.Off
             }),
-            CarService.PropertyCallback(VehiclePropertyIds.DOOR_LOCK, { value ->
+            CarService.PropertyCallback(VehiclePropertyIds.DOOR_LOCK,
+                listOf(VehicleAreaDoor.DOOR_ROW_1_LEFT, VehicleAreaDoor.DOOR_ROW_1_RIGHT, VehicleAreaDoor.DOOR_ROW_2_LEFT, VehicleAreaDoor.DOOR_ROW_2_RIGHT),
+                { value ->
                 _carLockState.value = if (value as? Boolean == true) Toggle.Off else Toggle.On
-            }),
+                }
+            ),
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
@@ -108,16 +113,12 @@ class CarViewModel @Inject constructor(
     }
 
     fun toggleCarLock() {
-        val newValue = if (_carLockState.value == Toggle.On) {
-            true
-        } else {
-            false
-        }
+        val newValue = _carLockState.value == Toggle.Off
         carService.setProperty(
             Boolean::class.java,
             VehiclePropertyIds.DOOR_LOCK,
-            VehicleAreaType.VEHICLE_AREA_TYPE_DOOR,
-            newValue
+            85,
+            true
         )
     }
 

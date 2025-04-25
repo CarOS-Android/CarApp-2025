@@ -1,6 +1,7 @@
 package com.thoughtworks.carapp.service
 
 import android.car.Car
+import android.car.VehicleAreaDoor
 import android.car.VehiclePropertyIds
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
@@ -48,7 +49,11 @@ class CarService @Inject constructor(
     fun registerPropertyListeners(callbacks: List<PropertyCallback>) {
         val subscriptions: List<Subscription> = callbacks.map { callback ->
             Subscription.Builder(callback.propertyId)
-                .build()
+                .also{builder ->
+                    if (callback.areaIds != null) {
+                        callback.areaIds.forEach {id -> builder.addAreaId(id)}
+                    }
+                }.build()
         }
 
         carPropertyManager?.subscribePropertyEvents(subscriptions, null, commonCallback)
@@ -103,7 +108,7 @@ class CarService @Inject constructor(
         }
     }
 
-    class PropertyCallback(val propertyId: Int, val onChange: (Any) -> Unit)
+    class PropertyCallback(val propertyId: Int, val areaIds : List<Int>?, val onChange: (Any) -> Unit)
 
     /**
      * 设置车辆属性的通用方法
