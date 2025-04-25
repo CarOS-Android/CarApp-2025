@@ -66,31 +66,31 @@ class CarViewModel @Inject constructor(
 
     private fun connectToCar() {
         this.propertyCallbacks = listOf(
-            CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, null, { value, _ ->
+            CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, null) { value, _ ->
                 _engineState.value = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
-            }),
+            },
             CarService.PropertyCallback(
                 VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY,
-                null,
-                { value, _ ->
-                    _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
-                }),
-            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, null, { value, _ ->
+                null
+            ) { value, _ ->
+                _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
+            },
+            CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, null) { value, _ ->
                 _parkingBrakeOnState.value =
                     if (value as? Boolean == true) Toggle.On else Toggle.Off
-            }),
+            },
             CarService.PropertyCallback(
                 VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH,
-                null,
-                { value, _ ->
-                    _highBeamState.value = if (value == 1) Toggle.On else Toggle.Off
-                }),
-            CarService.PropertyCallback(VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, null, { value, _ ->
+                null
+            ) { value, _ ->
+                _highBeamState.value = if (value == 1) Toggle.On else Toggle.Off
+            },
+            CarService.PropertyCallback(VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, null) { value, _ ->
                 _hazardLightsState.value = if (value == 1) Toggle.On else Toggle.Off
-            }),
-            CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, null, { value, _ ->
+            },
+            CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, null) { value, _ ->
                 _headLightsState.value = if (value == 1) Toggle.On else Toggle.Off
-            }),
+            },
             CarService.PropertyCallback(
                 VehiclePropertyIds.DOOR_LOCK,
                 doorAreaIds
