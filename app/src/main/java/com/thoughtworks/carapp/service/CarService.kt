@@ -1,7 +1,6 @@
 package com.thoughtworks.carapp.service
 
 import android.car.Car
-import android.car.VehiclePropertyIds
 import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.CarPropertyManager
 import android.car.hardware.property.Subscription
@@ -17,7 +16,6 @@ class CarService @Inject constructor(
 ) {
     private var car: Car? = null
     private var carPropertyManager: CarPropertyManager? = null
-    private var ignitionStateChangeListener: ((Int) -> Unit)? = null
     private var propertyCallbacks: MutableList<PropertyCallback> = mutableListOf()
 
     fun connect() {
@@ -60,20 +58,6 @@ class CarService @Inject constructor(
         }
     }
 
-    fun registerIgnitionStateListener(listener: (Int) -> Unit) {
-        ignitionStateChangeListener = listener
-        carPropertyManager?.subscribePropertyEvents(
-            VehiclePropertyIds.IGNITION_STATE,
-            CarPropertyManager.SENSOR_RATE_ONCHANGE,
-            ignitionCallback
-        )
-        carPropertyManager?.subscribePropertyEvents(
-            VehiclePropertyIds.IGNITION_STATE,
-            CarPropertyManager.SENSOR_RATE_ONCHANGE,
-            ignitionCallback
-        )
-    }
-
     fun registerPropertyListeners(callbacks: List<PropertyCallback>) {
         val subscriptions: List<Subscription> = callbacks.map { callback ->
             Subscription.Builder(callback.propertyId)
@@ -95,28 +79,6 @@ class CarService @Inject constructor(
 
         if (propertyCallbacks.size == 0) {
             carPropertyManager?.unsubscribePropertyEvents(commonCallback)
-        }
-    }
-
-    fun <E> getProperty(propertyId: Int, areaId: Int): E? {
-        return carPropertyManager?.getProperty<E>(propertyId, areaId)?.value
-    }
-
-    fun unregisterIgnitionStateListener() {
-        carPropertyManager?.unsubscribePropertyEvents(ignitionCallback)
-        ignitionStateChangeListener = null
-    }
-
-    private val ignitionCallback = object : CarPropertyManager.CarPropertyEventCallback {
-        override fun onChangeEvent(value: CarPropertyValue<Any?>) {
-            if (value.propertyId == VehiclePropertyIds.IGNITION_STATE) {
-                val state = value.value as Int
-                ignitionStateChangeListener?.invoke(state)
-            }
-        }
-
-        override fun onErrorEvent(propId: Int, zone: Int) {
-            Log.e("CarService", "Error listening to IGNITION_STATE")
         }
     }
 
