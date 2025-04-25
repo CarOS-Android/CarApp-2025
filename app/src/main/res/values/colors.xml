@@ -7,4 +7,33 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">@color/gl_light_cyan</color>
+
+    <color name="gl_transparent">#00000000</color>
+    <color name="gl_black">#000000</color>
+    <color name="gl_black_alpha">#E61B1D25</color>
+    <color name="gl_black_alpha_84">#D6000000</color>
+    <color name="gl_white">#FFFFFF</color>
+    <color name="gl_white_alpha_30">#4BFFFFFF</color>
+    <color name="gl_dark_grey_1">#79818f</color>
+    <color name="gl_dark_grey_2">#69707b</color>
+    <color name="gl_dark_gray_3">#90969a</color>
+    <color name="gl_dark_gray_4">#4e505e</color>
+    <color name="gl_dark_gray_5">#7a92a2</color>
+    <color name="gl_light">#F1F3F5</color>
+    <color name="gl_light_grey">#A9B1C2</color>
+    <color name="gl_light_grey_1">#A0AABC</color>
+    <color name="gl_pink">#FF7DC3</color>
+    <color name="gl_light_cyan">#03fffc</color>
+    <color name="gl_cyan">#46F1EB</color>
+    <color name="gl_light_blue">#A4FFFD</color>
+    <color name="gl_blue">#42c4ff</color>
+    <color name="gl_blue_1">#24c9ff</color>
+    <color name="gl_blue_2">#3377ff</color>
+    <color name="gl_red">#FF6469</color>
+    <color name="gl_orange">#FABB6C</color>
 </resources>
