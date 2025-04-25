@@ -186,6 +186,7 @@ private fun Clock(modifier: Modifier) {
 @Composable
 private fun AcBox(modifier: Modifier = Modifier, viewModel: CarViewModel) {
     val diverTemperature by viewModel.diverTemperature.collectAsState()
+    val coPilotTemperature by viewModel.coPilotTemperature.collectAsState()
     Box(
         modifier = modifier
             .padding(start = 51.dp)
@@ -211,11 +212,9 @@ private fun AcBox(modifier: Modifier = Modifier, viewModel: CarViewModel) {
                 painter = painterResource(id = R.drawable.ic_fan),
                 contentDescription = null
             )
-            Image(
-                modifier = Modifier.weight(1f),
-                painter = painterResource(id = R.drawable.ic_temp_codriver),
-                contentDescription = null
-            )
+            AirCondition(label = "副驾", currentValue = coPilotTemperature, handleSweepStep = { temp ->
+                viewModel.setCoPilotTemperature(temp)
+            })
         }
     }
 }

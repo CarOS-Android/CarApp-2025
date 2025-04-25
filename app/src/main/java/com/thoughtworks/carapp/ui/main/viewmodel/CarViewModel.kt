@@ -48,6 +48,10 @@ class CarViewModel @Inject constructor(
     private val _diverTemperature = MutableStateFlow(0.0f)
     val diverTemperature: StateFlow<Float> = _diverTemperature.asStateFlow()
 
+    // 副驾-空调温度
+    private val _coPilotTemperature = MutableStateFlow(0.0f)
+    val coPilotTemperature: StateFlow<Float> = _coPilotTemperature.asStateFlow()
+
     // 门锁状态
     private val _carLockState = MutableStateFlow(Lock.Locked)
     val carLockState: StateFlow<Lock> = _carLockState.asStateFlow()
@@ -106,16 +110,25 @@ class CarViewModel @Inject constructor(
             },
             CarService.PropertyCallback(
                 VehiclePropertyIds.HVAC_TEMPERATURE_SET,
-                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT)
-            ) { value, _ ->
-                _diverTemperature.value = value as Float
-            },
+                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT, VehicleAreaSeat.SEAT_ROW_1_RIGHT)
+            ) { value, areaId ->
+                if (areaId == VehicleAreaSeat.SEAT_ROW_1_LEFT) {
+                    _diverTemperature.value = value as Float
+                }
+                if (areaId == VehicleAreaSeat.SEAT_ROW_1_RIGHT) {
+                    _coPilotTemperature.value = value as Float
+                }
+            }
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
 
     fun setDiverTemperature(value: Float) {
         carService.setProperty(VehiclePropertyIds.HVAC_TEMPERATURE_SET, VehicleAreaSeat.SEAT_ROW_1_LEFT, value)
+    }
+
+    fun setCoPilotTemperature(value: Float) {
+        carService.setProperty(VehiclePropertyIds.HVAC_TEMPERATURE_SET, VehicleAreaSeat.SEAT_ROW_1_RIGHT, value)
     }
 
     fun toggleHazardLights() {

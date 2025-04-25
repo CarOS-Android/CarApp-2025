@@ -50,8 +50,8 @@ fun AirCondition(label: String, currentValue: Float, handleSweepStep: (Float) ->
             stepOrientation = CLOCKWISE,
             steps = 12,
             currentValue = currentValue,
-            minValue = 14f,
-            maxValue = 32f,
+            minValue = 16f,
+            maxValue = 28f,
             stepValue = 0.5f,
             startAngle = 0f,
             border = {
