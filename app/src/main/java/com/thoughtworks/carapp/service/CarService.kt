@@ -44,6 +44,12 @@ class CarService @Inject constructor(
         }
     }
 
+    /**
+     * 设置车辆属性，并且给多个区域设置同样的值
+     * @param propertyId 属性ID
+     * @param areaIds 区域ID数组
+     * @param value 属性值
+     */
     fun <Value : Any> setPropertyForMultipleAreas(
         propertyId: Int,
         areaIds: List<Int>,
@@ -98,6 +104,12 @@ class CarService @Inject constructor(
         }
     }
 
+    /**
+     * 属性回调
+     * @property propertyId 属性ID
+     * @property areaIds 属性区域
+     * @property onChange 属性被改变回调, Any是属性ID，Int是区域ID
+     */
     class PropertyCallback(
         val propertyId: Int,
         val areaIds: List<Int>?,
