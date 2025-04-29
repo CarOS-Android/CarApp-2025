@@ -142,10 +142,11 @@ class CarViewModel @Inject constructor(
     ) {
         when (action) {
             is ViewAction.ToggleCarLock -> {
+                val newValue = state.carLockState != Lock.Unlocked
                 carService.setPropertyForMultipleAreas(
                     VehiclePropertyIds.DOOR_LOCK,
                     doorAreaIds,
-                    state.carLockState.switch() != Lock.Unlocked
+                    newValue
                 )
             }
 
