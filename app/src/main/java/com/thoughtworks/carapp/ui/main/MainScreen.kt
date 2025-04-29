@@ -5,17 +5,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
+import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 
 @Composable
-fun MainScreen() {
-    // 获取车辆信息Car
-    val viewModel: CarViewModel = hiltViewModel() // 改为使用hiltViewModel
+fun MainScreen(
+    viewModel: CarViewModel = viewModel<CarViewModel>()
+) {
+    val state = viewModel.carState.collectAsState()
+    val currentState = state.value
+
     Row(
         modifier = Modifier
             .fillMaxSize(),
@@ -26,7 +32,27 @@ fun MainScreen() {
                 .weight(0.6f)
                 .fillMaxHeight()
         ) {
-            CarControl(viewModel)
+            CarControl(
+                carControlState = currentState.carControlState,
+                carLightState = currentState.carLightState,
+                carLockState = currentState.carLockState,
+                acBoxState = currentState.acBoxState,
+                toggleCarLock = {
+                    viewModel.dispatch(ViewAction.ToggleCarLock)
+                },
+                onSweepStep = { it, temperatureType ->
+                    viewModel.dispatch(ViewAction.OnSweepStep(it, temperatureType))
+                },
+                toggleHeadLights = {
+                    viewModel.dispatch(ViewAction.ToggleHeadLights)
+                },
+                toggleHazardLights = {
+                    viewModel.dispatch(ViewAction.ToggleHazardLights)
+                },
+                toggleHighBeamLights = {
+                    viewModel.dispatch(ViewAction.ToggleHighBeamLights)
+                }
+            )
         }
         Box(
             modifier = Modifier
@@ -36,6 +62,12 @@ fun MainScreen() {
             CarMedia()
         }
     }
+}
+
+@Preview
+@Composable
+fun MainScreenPreview() {
+    MainScreen()
 }
 
 enum class Toggle {

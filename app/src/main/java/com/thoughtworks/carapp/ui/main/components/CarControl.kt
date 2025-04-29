@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,14 +22,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.main.Lock
 import com.thoughtworks.carapp.ui.main.Toggle
-import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
+import com.thoughtworks.carapp.ui.main.presentation.AcBoxState
+import com.thoughtworks.carapp.ui.main.presentation.CarControlState
+import com.thoughtworks.carapp.ui.main.presentation.CarLightState
 
 @Composable
-fun CarControl(viewModel: CarViewModel) {
-    val engineState by viewModel.engineState.collectAsState()
-    val autoHoldState by viewModel.autoHoldState.collectAsState()
-    val parkingBrakeState by viewModel.parkingBrakeOnState.collectAsState()
+fun CarControl(
+    carControlState: CarControlState,
+    carLightState: CarLightState,
+    carLockState: Lock,
+    acBoxState: AcBoxState,
+    toggleCarLock: () -> Unit,
+    onSweepStep: (Float, TemperatureType) -> Unit,
+    toggleHeadLights: () -> Unit,
+    toggleHazardLights: () -> Unit,
+    toggleHighBeamLights: () -> Unit
+) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -44,7 +52,7 @@ fun CarControl(viewModel: CarViewModel) {
             Engine(
                 modifier = Modifier
                     .size(200.dp),
-                state = engineState
+                state = carControlState.engineState
             )
         }
 
@@ -54,7 +62,15 @@ fun CarControl(viewModel: CarViewModel) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CenterCar(engineState, viewModel)
+            CenterCar(
+                engineState = carControlState.engineState,
+                carLightState = carLightState,
+                carLockState = carLockState,
+                toggleCarLock = toggleCarLock,
+                toggleHeadLights = toggleHeadLights,
+                toggleHazardLights = toggleHazardLights,
+                toggleHighBeamLights = toggleHighBeamLights
+            )
         }
 
         Row(
@@ -65,7 +81,7 @@ fun CarControl(viewModel: CarViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier.weight(7f)) {
-                AcBox(viewModel = viewModel)
+                AcBox(acBoxState = acBoxState, onSweepStep = onSweepStep)
             }
             Box(
                 modifier = Modifier
@@ -73,11 +89,11 @@ fun CarControl(viewModel: CarViewModel) {
                     .fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 Row(modifier = Modifier.offset(y = (-60).dp)) {
-                    ParkingBrake(parkingBrakeState)
+                    ParkingBrake(carControlState.parkingBrakeState)
                 }
 
                 Row(modifier = Modifier.offset(y = 60.dp)) {
-                    AutoHoldComponent(autoHoldState)
+                    AutoHoldComponent(carControlState.autoHoldState)
                 }
             }
         }
@@ -85,9 +101,22 @@ fun CarControl(viewModel: CarViewModel) {
 }
 
 @Composable
-fun CenterCar(state: Toggle, viewModel: CarViewModel) {
-    if (state == Toggle.On) {
-        CenterEnginOn(viewModel)
+fun CenterCar(
+    engineState: Toggle,
+    carLightState: CarLightState,
+    carLockState: Lock,
+    toggleCarLock: () -> Unit,
+    toggleHeadLights: () -> Unit,
+    toggleHazardLights: () -> Unit,
+    toggleHighBeamLights: () -> Unit
+) {
+    if (engineState == Toggle.On) {
+        CenterEnginOn(
+            carLightState,
+            toggleHeadLights = toggleHeadLights,
+            toggleHazardLights = toggleHazardLights,
+            toggleHighBeamLights = toggleHighBeamLights
+        )
     } else {
         Box(
             modifier = Modifier
@@ -104,7 +133,7 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
                     .align(Alignment.BottomCenter)
                     .offset(x = 0.dp, y = 27.dp),
             ) {
-                CarLockButton(viewModel)
+                CarLockButton(carLockState, toggleCarLock)
             }
             Box(
                 modifier = Modifier
@@ -130,12 +159,27 @@ fun CenterCar(state: Toggle, viewModel: CarViewModel) {
 @Composable
 fun PreviewCenterCar() {
     CenterCar(
-        Toggle.Off, viewModel = TODO()
+        engineState = Toggle.Off,
+        carLightState = CarLightState(
+            hazardLightsState = Toggle.Off,
+            headLightsState = Toggle.Off,
+            highBeamState = Toggle.Off
+        ),
+        carLockState = Lock.Locked,
+        toggleCarLock = {},
+        toggleHeadLights = {},
+        toggleHazardLights = {},
+        toggleHighBeamLights = {}
     )
 }
 
 @Composable
-fun CenterEnginOn(viewModel: CarViewModel) {
+fun CenterEnginOn(
+    carLightState: CarLightState,
+    toggleHeadLights: () -> Unit,
+    toggleHazardLights: () -> Unit,
+    toggleHighBeamLights: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -151,7 +195,12 @@ fun CenterEnginOn(viewModel: CarViewModel) {
                     .offset(y = 70.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                CarLight(viewModel)
+                CarLight(
+                    carLightState,
+                    toggleHeadLights = toggleHeadLights,
+                    toggleHazardLights = toggleHazardLights,
+                    toggleHighBeamLights = toggleHighBeamLights
+                )
             }
         }
     }
@@ -184,9 +233,11 @@ private fun Clock(modifier: Modifier) {
 }
 
 @Composable
-private fun AcBox(modifier: Modifier = Modifier, viewModel: CarViewModel) {
-    val diverTemperature by viewModel.diverTemperature.collectAsState()
-    val coPilotTemperature by viewModel.coPilotTemperature.collectAsState()
+private fun AcBox(
+    modifier: Modifier = Modifier,
+    acBoxState: AcBoxState,
+    onSweepStep: (Float, TemperatureType) -> Unit
+) {
     Box(
         modifier = modifier
             .padding(start = 51.dp)
@@ -204,17 +255,27 @@ private fun AcBox(modifier: Modifier = Modifier, viewModel: CarViewModel) {
         )
 
         Row(modifier = Modifier.padding(22.dp)) {
-            AirCondition(label = "主驾", currentValue = diverTemperature, handleSweepStep = { temp ->
-                viewModel.setDiverTemperature(temp)
-            })
+            AirCondition(
+                label = "主驾",
+                currentValue = acBoxState.driverTemperature,
+                handleSweepStep = { temp ->
+                    onSweepStep(temp, TemperatureType.Driver)
+                })
             Image(
                 modifier = Modifier.weight(1f),
                 painter = painterResource(id = R.drawable.ic_fan),
                 contentDescription = null
             )
-            AirCondition(label = "副驾", currentValue = coPilotTemperature, handleSweepStep = { temp ->
-                viewModel.setCoPilotTemperature(temp)
-            })
+            AirCondition(
+                label = "副驾",
+                currentValue = acBoxState.coPilotTemperature,
+                handleSweepStep = { temp ->
+                    onSweepStep(temp, TemperatureType.CoPilot)
+                })
         }
     }
+}
+
+enum class TemperatureType {
+    Driver, CoPilot
 }
