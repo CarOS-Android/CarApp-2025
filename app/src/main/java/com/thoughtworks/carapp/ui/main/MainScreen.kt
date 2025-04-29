@@ -5,23 +5,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
-import com.thoughtworks.carapp.ui.main.presentation.ViewAction
-import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
+import com.thoughtworks.carapp.ui.main.components.TemperatureType
+import com.thoughtworks.carapp.ui.main.presentation.CarState
 
 @Composable
 fun MainScreen(
-    viewModel: CarViewModel = viewModel<CarViewModel>()
+    state: CarState,
+    toggleCarLock: () -> Unit,
+    onSweepStep: (Float, TemperatureType) -> Unit,
+    toggleHeadLights: () -> Unit,
+    toggleHazardLights: () -> Unit,
+    toggleHighBeamLights: () -> Unit
 ) {
-    val state = viewModel.carState.collectAsState()
-    val currentState = state.value
-
     Row(
         modifier = Modifier
             .fillMaxSize(),
@@ -33,25 +33,15 @@ fun MainScreen(
                 .fillMaxHeight()
         ) {
             CarControl(
-                carControlState = currentState.carControlState,
-                carLightState = currentState.carLightState,
-                carLockState = currentState.carLockState,
-                acBoxState = currentState.acBoxState,
-                toggleCarLock = {
-                    viewModel.dispatch(ViewAction.ToggleCarLock)
-                },
-                onSweepStep = { it, temperatureType ->
-                    viewModel.dispatch(ViewAction.OnSweepStep(it, temperatureType))
-                },
-                toggleHeadLights = {
-                    viewModel.dispatch(ViewAction.ToggleHeadLights)
-                },
-                toggleHazardLights = {
-                    viewModel.dispatch(ViewAction.ToggleHazardLights)
-                },
-                toggleHighBeamLights = {
-                    viewModel.dispatch(ViewAction.ToggleHighBeamLights)
-                }
+                carControlState = state.carControlState,
+                carLightState = state.carLightState,
+                carLockState = state.carLockState,
+                acBoxState = state.acBoxState,
+                toggleCarLock = toggleCarLock,
+                onSweepStep = onSweepStep,
+                toggleHeadLights = toggleHeadLights,
+                toggleHazardLights = toggleHazardLights,
+                toggleHighBeamLights = toggleHighBeamLights,
             )
         }
         Box(
@@ -64,10 +54,17 @@ fun MainScreen(
     }
 }
 
-@Preview
+@Preview(widthDp = 1408, heightDp = 792)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    MainScreen(
+        state = CarState(),
+        toggleCarLock = {},
+        onSweepStep = { _, _ -> },
+        toggleHeadLights = {},
+        toggleHazardLights = {},
+        toggleHighBeamLights = {}
+    )
 }
 
 enum class Toggle {

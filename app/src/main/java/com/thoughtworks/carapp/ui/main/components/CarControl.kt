@@ -153,26 +153,6 @@ fun CenterCar(
     }
 }
 
-@Preview(
-    widthDp = 625, heightDp = 220
-)
-@Composable
-fun PreviewCenterCar() {
-    CenterCar(
-        engineState = Toggle.Off,
-        carLightState = CarLightState(
-            hazardLightsState = Toggle.Off,
-            headLightsState = Toggle.Off,
-            highBeamState = Toggle.Off
-        ),
-        carLockState = Lock.Locked,
-        toggleCarLock = {},
-        toggleHeadLights = {},
-        toggleHazardLights = {},
-        toggleHighBeamLights = {}
-    )
-}
-
 @Composable
 fun CenterEnginOn(
     carLightState: CarLightState,
@@ -278,4 +258,33 @@ private fun AcBox(
 
 enum class TemperatureType {
     Driver, CoPilot
+}
+
+@Preview(
+    widthDp = 845, heightDp = 792
+)
+@Composable
+fun PreviewCenterCar() {
+    CarControl(
+        carControlState = CarControlState(
+            parkingBrakeState = Toggle.Off,
+            autoHoldState = Toggle.Off,
+            engineState = Toggle.Off
+        ),
+        acBoxState = AcBoxState(
+            driverTemperature = 20f,
+            coPilotTemperature = 22f
+        ),
+        carLightState = CarLightState(
+            hazardLightsState = Toggle.Off,
+            headLightsState = Toggle.Off,
+            highBeamState = Toggle.Off
+        ),
+        carLockState = Lock.Locked,
+        toggleCarLock = {},
+        toggleHeadLights = {},
+        toggleHazardLights = {},
+        toggleHighBeamLights = {},
+        onSweepStep = { _, _ -> }
+    )
 }
