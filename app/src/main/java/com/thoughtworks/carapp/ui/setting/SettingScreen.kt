@@ -1,32 +1,60 @@
 package com.thoughtworks.carapp.ui.setting
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.setting.components.AreaSeat
 import com.thoughtworks.carapp.ui.setting.components.SeatControl
+import com.thoughtworks.carapp.ui.setting.presentation.SeatControlUiState
+import com.thoughtworks.carapp.ui.setting.presentation.SeatEvent
+import com.thoughtworks.carapp.ui.setting.viewmodel.SeatViewModel
 
 @Composable
 fun SettingScreen() {
-    Column(
+    val seatViewModel: SeatViewModel = hiltViewModel()
+    val seatOperationState = seatViewModel.operationState.collectAsState()
+
+    SeatControlRow(seatOperationState.value, seatViewModel::handleEvent)
+}
+
+@Composable
+fun SeatControlRow(seatState: SeatControlUiState, handleEvent: (SeatEvent) -> Unit) {
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF000000))
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .height(207.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(40.dp)
     ) {
-        SeatControl(AreaSeat.DRIVER)
-        Spacer(modifier = Modifier.height(24.dp))
-        SeatControl(AreaSeat.COPILOT)
+        AreaSeat.entries.forEach { seat ->
+            Box(modifier = Modifier.weight(1f)) {
+                SeatControl(
+                    areaSeat = seat,
+                    seatState = seatState.getSeatState(seat),
+                    handleEvent = handleEvent
+                )
+            }
+        }
+        Image(
+            modifier = Modifier.height(207.dp),
+            painter = painterResource(id = R.drawable.ambient_light),
+            contentDescription = ""
+        )
     }
+}
+
+@Preview(widthDp = 1408, heightDp = 792)
+@Composable
+fun ScreenPreview() {
+    SeatControlRow(seatState = SeatControlUiState(), handleEvent = {})
 }
