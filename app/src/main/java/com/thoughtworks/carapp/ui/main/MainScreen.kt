@@ -13,6 +13,7 @@ import com.thoughtworks.carapp.ui.main.components.CarMedia
 import com.thoughtworks.carapp.ui.main.components.TemperatureType
 import com.thoughtworks.carapp.ui.main.presentation.CarState
 
+@Preview(widthDp = 1408, heightDp = 792)
 @Composable
 fun MainScreen(
     state: CarState,

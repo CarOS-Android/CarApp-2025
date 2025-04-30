@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoughtworks.blindhmi.ui.component.container.stepper.Stepper.Companion.CLOCKWISE
@@ -29,8 +30,9 @@ import com.thoughtworks.blindhmi.ui.utils.moveDown
 import com.thoughtworks.blindhmi.ui.utils.moveUp
 import com.thoughtworks.carapp.R
 
+@Preview(widthDp = 1408, heightDp = 792)
 @Composable
-fun AirCondition(label: String, currentValue: Float, handleSweepStep: (Float) -> Unit) {
+fun AirCondition(label: String = "123", currentValue: Float = 1.0F, handleSweepStep: (Float) -> Unit = {}) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
