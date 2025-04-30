@@ -4,6 +4,7 @@ import android.car.VehicleAreaDoor
 import android.car.VehicleAreaSeat.SEAT_ROW_1_LEFT
 import android.car.VehicleAreaSeat.SEAT_ROW_1_RIGHT
 import android.car.VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL
+import android.car.VehicleAreaWindow
 import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
 import android.car.VehiclePropertyIds.HAZARD_LIGHTS_SWITCH
@@ -64,8 +65,8 @@ class CarViewModel @Inject constructor(
                 null
             ) { value, _ ->
                 val newValue = if (value as? Boolean == true) Toggle.On else Toggle.Off
-                _carState.update {
-                    state -> state.copy(carControlState = state.carControlState.copy(autoHoldState = newValue))
+                _carState.update { state ->
+                    state.copy(carControlState = state.carControlState.copy(autoHoldState = newValue))
                 }
 
             },
@@ -80,8 +81,8 @@ class CarViewModel @Inject constructor(
                 null
             ) { value, _ ->
                 val newValue = if (value == 1) Toggle.On else Toggle.Off
-                _carState.update {
-                    state -> state.copy(carLightState = state.carLightState.copy(highBeamState = newValue))
+                _carState.update { state ->
+                    state.copy(carLightState = state.carLightState.copy(highBeamState = newValue))
                 }
             },
             CarService.PropertyCallback(HAZARD_LIGHTS_SWITCH, null) { value, _ ->
@@ -111,16 +112,25 @@ class CarViewModel @Inject constructor(
                 listOf(SEAT_ROW_1_LEFT, SEAT_ROW_1_RIGHT)
             ) { value, areaId ->
                 if (areaId == SEAT_ROW_1_LEFT) {
-                    _carState.update {
-                        state -> state.copy(acBoxState = state.acBoxState.copy(driverTemperature = value as Float))
+                    _carState.update { state ->
+                        state.copy(acBoxState = state.acBoxState.copy(driverTemperature = value as Float))
                     }
                 }
                 if (areaId == SEAT_ROW_1_RIGHT) {
-                    _carState.update {
-                        state -> state.copy(acBoxState = state.acBoxState.copy(coPilotTemperature = value as Float))
+                    _carState.update { state ->
+                        state.copy(acBoxState = state.acBoxState.copy(coPilotTemperature = value as Float))
                     }
                 }
-            }
+            },
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_DEFROSTER,
+                listOf(VehicleAreaWindow.WINDOW_FRONT_WINDSHIELD),
+            ) { value, _ ->
+                val newValue = if (value == true) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = newValue))
+                }
+            },
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
@@ -132,8 +142,7 @@ class CarViewModel @Inject constructor(
     }
 
     fun dispatch(action: ViewAction) {
-        _carState.update { reduce(carState.value, action) }
-        sideEffect(carState.value, action)
+        sideEffect(reduce(carState.value, action), action)
     }
 
     private fun sideEffect(
@@ -192,6 +201,15 @@ class CarViewModel @Inject constructor(
                     )
                 }
             }
+
+            is ViewAction.ToggleFrontWindowDefog -> {
+                carService.setProperty(
+                    Boolean::class.java,
+                    VehiclePropertyIds.HVAC_DEFROSTER,
+                    VehicleAreaWindow.WINDOW_FRONT_WINDSHIELD,
+                    state.airFlowState.frontWindowDefogState.toBoolean()
+                )
+            }
             else -> Unit
         }
     }
@@ -204,15 +222,19 @@ class CarViewModel @Inject constructor(
             is ViewAction.ToggleCarLock -> {
                 state.copy(carLockState = state.carLockState.switch())
             }
+
             is ViewAction.ToggleHeadLights -> {
                 state.copy(carLightState = state.carLightState.copy(headLightsState = state.carLightState.headLightsState.toggle()))
             }
+
             is ViewAction.ToggleHazardLights -> {
                 state.copy(carLightState = state.carLightState.copy(hazardLightsState = state.carLightState.hazardLightsState.toggle()))
             }
+
             is ViewAction.ToggleHighBeamLights -> {
                 state.copy(carLightState = state.carLightState.copy(highBeamState = state.carLightState.highBeamState.toggle()))
             }
+
             is ViewAction.OnSweepStep -> {
                 if (action.temperatureType == TemperatureType.Driver) {
                     state.copy(acBoxState = state.acBoxState.copy(driverTemperature = action.temperature))
@@ -220,7 +242,10 @@ class CarViewModel @Inject constructor(
                     state.copy(acBoxState = state.acBoxState.copy(coPilotTemperature = action.temperature))
                 }
             }
-            else -> state
+
+            is ViewAction.ToggleFrontWindowDefog -> {
+                state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = state.airFlowState.frontWindowDefogState.toggle()))
+            }
         }
     }
 

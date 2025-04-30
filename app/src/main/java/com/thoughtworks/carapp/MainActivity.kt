@@ -36,7 +36,6 @@ import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 import com.thoughtworks.carapp.ui.setting.SettingScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -90,7 +89,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel.dispatch(ViewAction.ToggleHighBeamLights)
                             }
                         )
-                        Destination.CarSetting -> SettingScreen()
+                        Destination.CarSetting -> SettingScreen(currentState.airFlowState, {
+                            viewModel.dispatch(ViewAction.ToggleFrontWindowDefog)
+                        })
                         else -> {
                             Box(
                                 contentAlignment = Alignment.Center,

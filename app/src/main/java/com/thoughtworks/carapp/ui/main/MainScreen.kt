@@ -78,6 +78,13 @@ enum class Toggle {
             Off -> On
         }
     }
+
+    fun toBoolean(): Boolean {
+        return when (this) {
+            On -> true
+            Off -> false
+        }
+    }
 }
 
 enum class Lock {

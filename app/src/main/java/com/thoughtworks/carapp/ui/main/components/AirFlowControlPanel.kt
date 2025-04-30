@@ -1,6 +1,7 @@
 package com.thoughtworks.carapp.ui.main.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.main.Toggle
+import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
-fun AirFlowControlPanel() {
+fun AirFlowControlPanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
+
+
     Box(
         modifier = Modifier
             .wrapContentSize(),
@@ -41,7 +46,11 @@ fun AirFlowControlPanel() {
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_ac_front_window_defog_off),
+                    modifier = Modifier.clickable { toggleFrontWindowDefog() },
+                    painter = when (airFlowState.frontWindowDefogState) {
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_front_window_defog_off)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_front_window_defog_on)
+                    },
                     contentDescription = "air flow control panel",
                 )
                 Image(
@@ -84,5 +93,12 @@ fun AirFlowControlPanel() {
 @Preview
 @Composable
 fun PreviewAirFlowControlPanel() {
-    AirFlowControlPanel()
+    AirFlowControlPanel(
+        AirFlowState(
+            frontWindowDefogState = Toggle.On,
+            rearWindowDefogState = Toggle.Off,
+            mirrorHeatState = Toggle.Off,
+            externalCirculationState = Toggle.Off,
+            internalCirculationState = Toggle.Off,
+        ), {})
 }

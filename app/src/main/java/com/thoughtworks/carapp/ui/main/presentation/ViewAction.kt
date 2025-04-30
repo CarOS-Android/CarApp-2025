@@ -7,5 +7,6 @@ sealed interface ViewAction {
     object ToggleHeadLights : ViewAction
     object ToggleHazardLights : ViewAction
     object ToggleHighBeamLights : ViewAction
+    object ToggleFrontWindowDefog: ViewAction
     data class OnSweepStep(val temperature: Float, val temperatureType: TemperatureType) : ViewAction
 }

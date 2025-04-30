@@ -25,15 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.main.components.AirFlowControlPanel
+import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
-fun SettingScreen() {
+fun SettingScreen(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
     Row(modifier = Modifier.fillMaxSize().background(Color.Black).padding(16.dp)) {
         // 左侧菜单栏
         LeftControlBar()
@@ -47,7 +48,7 @@ fun SettingScreen() {
         ) {
             TemperatureAndFanControl()
             Spacer(modifier = Modifier.height(24.dp))
-            AirFlowModePanel()
+            AirFlowModePanel(airFlowState, toggleFrontWindowDefog)
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -57,7 +58,7 @@ fun SettingScreen() {
 @Preview(widthDp = 1408, heightDp = 792)
 @Composable
 fun PreviewSettingScreen() {
-    SettingScreen()
+//    SettingScreen()
 }
 
 @Composable
@@ -92,9 +93,12 @@ fun TemperatureKnob(value: Int) {
 }
 
 @Composable
-fun AirFlowModePanel() {
+fun AirFlowModePanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("风模式切换（待实现）", color = Color.Gray)
+        AirFlowControlPanel(
+            airFlowState,
+            toggleFrontWindowDefog
+        )
     }
 }
 
