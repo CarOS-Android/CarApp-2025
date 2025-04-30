@@ -7,15 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.Preview
 import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
-import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
+import com.thoughtworks.carapp.ui.main.components.TemperatureType
+import com.thoughtworks.carapp.ui.main.presentation.CarState
 
 @Composable
-fun MainScreen() {
-    // 获取车辆信息Car
-    val viewModel: CarViewModel = hiltViewModel() // 改为使用hiltViewModel
+fun MainScreen(
+    state: CarState,
+    toggleCarLock: () -> Unit,
+    onSweepStep: (Float, TemperatureType) -> Unit,
+    toggleHeadLights: () -> Unit,
+    toggleHazardLights: () -> Unit,
+    toggleHighBeamLights: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxSize(),
@@ -26,7 +32,17 @@ fun MainScreen() {
                 .weight(0.6f)
                 .fillMaxHeight()
         ) {
-            CarControl(viewModel)
+            CarControl(
+                carControlState = state.carControlState,
+                carLightState = state.carLightState,
+                carLockState = state.carLockState,
+                acBoxState = state.acBoxState,
+                toggleCarLock = toggleCarLock,
+                onSweepStep = onSweepStep,
+                toggleHeadLights = toggleHeadLights,
+                toggleHazardLights = toggleHazardLights,
+                toggleHighBeamLights = toggleHighBeamLights,
+            )
         }
         Box(
             modifier = Modifier
@@ -36,6 +52,19 @@ fun MainScreen() {
             CarMedia()
         }
     }
+}
+
+@Preview(widthDp = 1408, heightDp = 792)
+@Composable
+fun MainScreenPreview() {
+    MainScreen(
+        state = CarState(),
+        toggleCarLock = {},
+        onSweepStep = { _, _ -> },
+        toggleHeadLights = {},
+        toggleHazardLights = {},
+        toggleHighBeamLights = {}
+    )
 }
 
 enum class Toggle {

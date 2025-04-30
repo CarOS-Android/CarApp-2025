@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.WindowInsets
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,11 +32,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.carapp.ui.main.MainScreen
+import com.thoughtworks.carapp.ui.main.presentation.ViewAction
+import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 import com.thoughtworks.carapp.ui.setting.SettingScreen
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: CarViewModel by viewModels<CarViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +69,27 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
+                    val state = viewModel.carState.collectAsState()
+                    val currentState = state.value
                     when (currentDestination) {
-                        Destination.Main -> MainScreen()
+                        Destination.Main -> MainScreen(
+                            state = currentState,
+                            toggleCarLock = {
+                                viewModel.dispatch(ViewAction.ToggleCarLock)
+                            },
+                            onSweepStep = { it, temperatureType ->
+                                viewModel.dispatch(ViewAction.OnSweepStep(it, temperatureType))
+                            },
+                            toggleHeadLights = {
+                                viewModel.dispatch(ViewAction.ToggleHeadLights)
+                            },
+                            toggleHazardLights = {
+                                viewModel.dispatch(ViewAction.ToggleHazardLights)
+                            },
+                            toggleHighBeamLights = {
+                                viewModel.dispatch(ViewAction.ToggleHighBeamLights)
+                            }
+                        )
                         Destination.CarSetting -> SettingScreen()
                         else -> {
                             Box(
