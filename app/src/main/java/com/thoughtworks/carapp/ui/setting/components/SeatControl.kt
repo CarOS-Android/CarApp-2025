@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thoughtworks.carapp.R
+import com.thoughtworks.carapp.ui.setting.presentation.SeatEvent
 import com.thoughtworks.carapp.ui.setting.viewmodel.SeatViewModel
 
 @Composable
@@ -56,9 +57,8 @@ fun SeatControl(areaSeat: AreaSeat) {
                         info = operationInfo,
                         level = seatState.getLevelFor(operationInfo),
                         onClick = {
-                            seatViewModel.setSeatValue(
-                                areaSeat,
-                                operationInfo
+                            seatViewModel.handleEvent(
+                                SeatEvent.SingleSeatOperation(areaSeat, operationInfo)
                             )
                         }
                     )
