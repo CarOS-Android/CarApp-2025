@@ -34,8 +34,20 @@ import com.thoughtworks.carapp.ui.main.components.AirFlowControlPanel
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
-fun SettingScreen(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
-    Row(modifier = Modifier.fillMaxSize().background(Color.Black).padding(16.dp)) {
+fun SettingScreen(
+    airFlowState: AirFlowState,
+    toggleFrontWindowDefog: () -> Unit,
+    toggleRearWindowDefog: () -> Unit,
+    toggleMirrorHeat: () -> Unit,
+    toggleExternalCirculation: () -> Unit,
+    toggleInternalCirculation: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
         // 左侧菜单栏
         LeftControlBar()
 
@@ -48,7 +60,14 @@ fun SettingScreen(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit
         ) {
             TemperatureAndFanControl()
             Spacer(modifier = Modifier.height(24.dp))
-            AirFlowModePanel(airFlowState, toggleFrontWindowDefog)
+            AirFlowModePanel(
+                airFlowState,
+                toggleFrontWindowDefog,
+                toggleRearWindowDefog,
+                toggleMirrorHeat,
+                toggleExternalCirculation,
+                toggleInternalCirculation
+            )
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -58,7 +77,14 @@ fun SettingScreen(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit
 @Preview(widthDp = 1408, heightDp = 792)
 @Composable
 fun PreviewSettingScreen() {
-//    SettingScreen()
+    SettingScreen(
+        airFlowState = AirFlowState(),
+        toggleFrontWindowDefog = {},
+        toggleRearWindowDefog = {},
+        toggleMirrorHeat = {},
+        toggleExternalCirculation = {},
+        toggleInternalCirculation = {}
+    )
 }
 
 @Composable
@@ -93,11 +119,22 @@ fun TemperatureKnob(value: Int) {
 }
 
 @Composable
-fun AirFlowModePanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
+fun AirFlowModePanel(
+    airFlowState: AirFlowState,
+    toggleFrontWindowDefog: () -> Unit,
+    toggleRearWindowDefog: () -> Unit,
+    toggleMirrorHeat: () -> Unit,
+    toggleExternalCirculation: () -> Unit,
+    toggleInternalCirculation: () -> Unit
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AirFlowControlPanel(
             airFlowState,
-            toggleFrontWindowDefog
+            toggleFrontWindowDefog,
+            toggleRearWindowDefog,
+            toggleMirrorHeat,
+            toggleExternalCirculation,
+            toggleInternalCirculation
         )
     }
 }

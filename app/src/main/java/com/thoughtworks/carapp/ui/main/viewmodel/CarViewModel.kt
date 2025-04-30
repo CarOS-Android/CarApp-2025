@@ -3,6 +3,9 @@ package com.thoughtworks.carapp.ui.main.viewmodel
 import android.car.VehicleAreaDoor
 import android.car.VehicleAreaSeat.SEAT_ROW_1_LEFT
 import android.car.VehicleAreaSeat.SEAT_ROW_1_RIGHT
+import android.car.VehicleAreaSeat.SEAT_ROW_2_CENTER
+import android.car.VehicleAreaSeat.SEAT_ROW_2_LEFT
+import android.car.VehicleAreaSeat.SEAT_ROW_2_RIGHT
 import android.car.VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL
 import android.car.VehicleAreaWindow
 import android.car.VehicleIgnitionState
@@ -45,6 +48,20 @@ class CarViewModel @Inject constructor(
         VehicleAreaDoor.DOOR_ROW_2_LEFT to Lock.Locked,
         VehicleAreaDoor.DOOR_ROW_2_RIGHT to Lock.Locked,
     )
+
+//    private val mirrorAreaIds = listOf(
+//        VEHICLE_AREA_TYPE_GLOBAL,
+////        VehicleAreaMirror.MIRROR_DRIVER_RIGHT
+//    )
+
+    private val allSeats = listOf(
+        SEAT_ROW_1_LEFT,
+        SEAT_ROW_1_RIGHT,
+        SEAT_ROW_2_LEFT,
+        SEAT_ROW_2_RIGHT,
+        SEAT_ROW_2_CENTER,
+
+        )
 
     private var propertyCallbacks: List<CarService.PropertyCallback> = listOf()
 
@@ -131,6 +148,41 @@ class CarViewModel @Inject constructor(
                     state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = newValue))
                 }
             },
+
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_DEFROSTER,
+                listOf(VehicleAreaWindow.WINDOW_REAR_WINDSHIELD),
+            ) { value, _ ->
+                val newValue = if (value == true) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(airFlowState = state.airFlowState.copy(rearWindowDefogState = newValue))
+                }
+            },
+
+//            CarService.PropertyCallback(
+//                VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
+//                mirrorAreaIds,
+//            ) { value, _ ->
+//                val newValue = if (value == 1) Toggle.On else Toggle.Off
+//                _carState.update { state ->
+//                    state.copy(airFlowState = state.airFlowState.copy(mirrorHeatState = newValue))
+//                }
+//            },
+
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_RECIRC_ON,
+                allSeats,
+            ) { value, _ ->
+                val newValue = if (value == true) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(
+                        airFlowState = state.airFlowState.copy(
+                            internalCirculationState = newValue,
+                            externalCirculationState = newValue.toggle()
+                        )
+                    )
+                }
+            },
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
@@ -210,6 +262,39 @@ class CarViewModel @Inject constructor(
                     state.airFlowState.frontWindowDefogState.toBoolean()
                 )
             }
+
+            is ViewAction.ToggleRearWindowDefog -> {
+                carService.setProperty(
+                    Boolean::class.java,
+                    VehiclePropertyIds.HVAC_DEFROSTER,
+                    VehicleAreaWindow.WINDOW_REAR_WINDSHIELD,
+                    state.airFlowState.rearWindowDefogState.toBoolean()
+                )
+            }
+
+//            is ViewAction.ToggleMirrorHeat -> {
+//                carService.setPropertyForMultipleAreas(
+//                    VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
+//                    mirrorAreaIds,
+//                    state.airFlowState.mirrorHeatState.toIntValue()
+//                )
+//            }
+
+            is ViewAction.ToggleInternalCirculation -> {
+                carService.setPropertyForMultipleAreas(
+                    VehiclePropertyIds.HVAC_RECIRC_ON,
+                    allSeats,
+                    state.airFlowState.internalCirculationState.toBoolean()
+                )
+            }
+            is ViewAction.ToggleExternalCirculation -> {
+                carService.setPropertyForMultipleAreas(
+                    VehiclePropertyIds.HVAC_RECIRC_ON,
+                    allSeats,
+                    state.airFlowState.externalCirculationState.toBoolean()
+                )
+            }
+
             else -> Unit
         }
     }
@@ -245,6 +330,32 @@ class CarViewModel @Inject constructor(
 
             is ViewAction.ToggleFrontWindowDefog -> {
                 state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = state.airFlowState.frontWindowDefogState.toggle()))
+            }
+
+            is ViewAction.ToggleRearWindowDefog -> {
+                state.copy(airFlowState = state.airFlowState.copy(rearWindowDefogState = state.airFlowState.rearWindowDefogState.toggle()))
+            }
+
+            is ViewAction.ToggleMirrorHeat -> {
+                state.copy(airFlowState = state.airFlowState.copy(mirrorHeatState = state.airFlowState.mirrorHeatState.toggle()))
+            }
+
+            is ViewAction.ToggleInternalCirculation -> {
+                state.copy(
+                    airFlowState = state.airFlowState.copy(
+                        internalCirculationState = state.airFlowState.internalCirculationState.toggle(),
+                        externalCirculationState = state.airFlowState.externalCirculationState.toggle()
+                    )
+                )
+            }
+
+            is ViewAction.ToggleExternalCirculation -> {
+                state.copy(
+                    airFlowState = state.airFlowState.copy(
+                        externalCirculationState = state.airFlowState.externalCirculationState.toggle(),
+                        internalCirculationState = state.airFlowState.internalCirculationState.toggle()
+                    )
+                )
             }
         }
     }

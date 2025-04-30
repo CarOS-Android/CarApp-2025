@@ -19,7 +19,14 @@ import com.thoughtworks.carapp.ui.main.Toggle
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
-fun AirFlowControlPanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -> Unit) {
+fun AirFlowControlPanel(
+    airFlowState: AirFlowState,
+    toggleFrontWindowDefog: () -> Unit,
+    toggleRearWindowDefog: () -> Unit,
+    toggleMirrorHeat: () -> Unit,
+    toggleExternalCirculation: () -> Unit,
+    toggleInternalCirculation: () -> Unit,
+) {
 
 
     Box(
@@ -54,7 +61,11 @@ fun AirFlowControlPanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -
                     contentDescription = "air flow control panel",
                 )
                 Image(
-                    painter = painterResource(R.drawable.ic_ac_rear_window_defog_off),
+                    modifier = Modifier.clickable { toggleRearWindowDefog() },
+                    painter = when (airFlowState.rearWindowDefogState) {
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_rear_window_defog_off)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_rear_window_defog_on)
+                    },
                     contentDescription = "air flow control panel",
                 )
             }
@@ -68,7 +79,11 @@ fun AirFlowControlPanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_ac_mirror_heat_off),
+                    modifier = Modifier.clickable {  toggleMirrorHeat() },
+                    painter = when (airFlowState.mirrorHeatState) {
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_mirror_heat_off)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_mirror_heat_on)
+                    },
                     contentDescription = "air flow control panel",
                 )
             }
@@ -78,11 +93,19 @@ fun AirFlowControlPanel(airFlowState: AirFlowState, toggleFrontWindowDefog: () -
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_ac_external_circulation_off),
+                    modifier = Modifier.clickable { toggleExternalCirculation() },
+                    painter = when (airFlowState.externalCirculationState) {
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_external_circulation_on)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_external_circulation_off)
+                    },
                     contentDescription = "air flow control panel",
                 )
                 Image(
-                    painter = painterResource(R.drawable.ic_ac_internal_circulation_off),
+                    modifier = Modifier.clickable { toggleInternalCirculation() },
+                    painter = when (airFlowState.internalCirculationState) {
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_internal_circulation_on)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_internal_circulation_off)
+                    },
                     contentDescription = "air flow control panel",
                 )
             }
@@ -100,5 +123,5 @@ fun PreviewAirFlowControlPanel() {
             mirrorHeatState = Toggle.Off,
             externalCirculationState = Toggle.Off,
             internalCirculationState = Toggle.Off,
-        ), {})
+        ), {}, {}, {}, {}, {})
 }

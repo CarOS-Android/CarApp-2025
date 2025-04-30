@@ -89,9 +89,16 @@ class MainActivity : ComponentActivity() {
                                 viewModel.dispatch(ViewAction.ToggleHighBeamLights)
                             }
                         )
-                        Destination.CarSetting -> SettingScreen(currentState.airFlowState, {
-                            viewModel.dispatch(ViewAction.ToggleFrontWindowDefog)
-                        })
+
+                        Destination.CarSetting -> SettingScreen(
+                            currentState.airFlowState,
+                            toggleFrontWindowDefog = { viewModel.dispatch(ViewAction.ToggleFrontWindowDefog) },
+                            toggleRearWindowDefog = { viewModel.dispatch(ViewAction.ToggleRearWindowDefog) },
+                            toggleMirrorHeat = { viewModel.dispatch(ViewAction.ToggleMirrorHeat) },
+                            toggleExternalCirculation = { viewModel.dispatch(ViewAction.ToggleExternalCirculation) },
+                            toggleInternalCirculation = { viewModel.dispatch(ViewAction.ToggleInternalCirculation) }
+                        )
+
                         else -> {
                             Box(
                                 contentAlignment = Alignment.Center,
