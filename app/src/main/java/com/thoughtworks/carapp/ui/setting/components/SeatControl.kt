@@ -1,5 +1,6 @@
 package com.thoughtworks.carapp.ui.setting.components
 
+import android.car.VehiclePropertyIds
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,7 +55,12 @@ fun SeatControl(areaSeat: AreaSeat) {
                     SeatOperation(
                         info = operationInfo,
                         level = seatState.getLevelFor(operationInfo),
-                        onClick = { seatViewModel.toggleOperationLevel(areaSeat, operationInfo) }
+                        onClick = {
+                            seatViewModel.setSeatValue(
+                                areaSeat,
+                                operationInfo
+                            )
+                        }
                     )
                 }
             }
@@ -63,7 +69,7 @@ fun SeatControl(areaSeat: AreaSeat) {
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 listOf("1", "2", "3", "+").forEach { item ->
-                    NumberButton(label = item)
+                    SittingMemoryButton(label = item)
                 }
             }
         }
@@ -140,7 +146,7 @@ fun SeatOperation(info: SeatOperationInfo, level: Int, onClick: () -> Unit) {
 }
 
 @Composable
-fun NumberButton(label: String) {
+fun SittingMemoryButton(label: String) {
     Box(
         modifier = Modifier.size(80.dp),
         contentAlignment = Alignment.Center
@@ -155,9 +161,15 @@ fun NumberButton(label: String) {
     }
 }
 
-enum class AreaSeat(val label: String) {
-    DRIVER("主驾"),
-    PASSENGER("副驾")
+enum class AreaSeat(val label: String, val areaId: Int) {
+    DRIVER("主驾", 1),
+    COPILOT("副驾", 4);
+
+    companion object {
+        fun getByAreaId(areaId: Int): AreaSeat? {
+            return AreaSeat.entries.find { areaSeat -> areaSeat.areaId == areaId }
+        }
+    }
 }
 
 enum class SeatOperationInfo(
@@ -165,18 +177,31 @@ enum class SeatOperationInfo(
     val color: Color,
     @DrawableRes val offResId: Int,
     @DrawableRes val onResId: Int,
+    val propertyId: Int?,
+    val values: List<Int>?
 ) {
     HEATING(
         "Seat heating",
         Color(0xFFCF597C),
         R.drawable.seat_heating_off,
-        R.drawable.seat_heating_on
+        R.drawable.seat_heating_on,
+        VehiclePropertyIds.HVAC_SEAT_TEMPERATURE,
+        listOf(-1, 1, 2)
     ),
     COOLING(
         "Seat cooling",
         Color(0xFF3476E3),
         R.drawable.seat_cooling_off,
-        R.drawable.seat_cooling_on
+        R.drawable.seat_cooling_on,
+        VehiclePropertyIds.HVAC_SEAT_VENTILATION,
+        null
     ),
-    MESSAGE("Message", Color(0xFF59CF8F), R.drawable.seat_message_off, R.drawable.seat_message_on)
+    MESSAGE(
+        "Message",
+        Color(0xFF59CF8F),
+        R.drawable.seat_message_off,
+        R.drawable.seat_message_on,
+        null,
+        null
+    )
 }

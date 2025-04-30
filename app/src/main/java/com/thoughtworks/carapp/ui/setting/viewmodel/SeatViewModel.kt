@@ -1,8 +1,13 @@
 package com.thoughtworks.carapp.ui.setting.viewmodel
 
+import android.car.VehicleAreaSeat
+import android.car.VehiclePropertyIds
 import androidx.lifecycle.ViewModel
+import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.setting.components.AreaSeat
 import com.thoughtworks.carapp.ui.setting.components.SeatOperationInfo
+import com.thoughtworks.carapp.ui.setting.presentation.SeatControlUiState
+import com.thoughtworks.carapp.ui.setting.presentation.SingleSeatState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,38 +15,58 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-data class SingleSeatState(
-    val heatingLevel: Int = 0,
-    val coolingLevel: Int = 0,
-    val messageLevel: Int = 0
-) {
-    fun getLevelFor(type: SeatOperationInfo): Int {
-        return when (type) {
-            SeatOperationInfo.HEATING -> heatingLevel
-            SeatOperationInfo.COOLING -> coolingLevel
-            SeatOperationInfo.MESSAGE -> messageLevel
-        }
-    }
-}
-
-data class SeatControlUiState(
-    val driverSeat: SingleSeatState = SingleSeatState(),
-    val passengerSeat: SingleSeatState = SingleSeatState()
-) {
-    fun getSeatState(areaSeat: AreaSeat): SingleSeatState {
-        return when (areaSeat) {
-            AreaSeat.DRIVER -> driverSeat
-            AreaSeat.PASSENGER -> passengerSeat
-        }
-    }
-}
-
 @HiltViewModel
-class SeatViewModel @Inject constructor() : ViewModel() {
+class SeatViewModel @Inject constructor(private val carService: CarService) : ViewModel() {
     private val _operationState = MutableStateFlow(SeatControlUiState())
     val operationState: StateFlow<SeatControlUiState> = _operationState.asStateFlow()
 
-    fun updateSeatState(
+    private var propertyCallbacks: List<CarService.PropertyCallback> = listOf()
+
+    init {
+        connectToCar()
+    }
+
+    private fun getLevelFromCarValue(type: SeatOperationInfo, value: Int): Int {
+        if (type.values != null && value != 0) {
+            return type.values.indexOf(value) + 1
+        }
+        return when {
+            value <= 3 -> value
+            value <= 20 -> 1
+            value <= 40 -> 2
+            else -> 3
+        }
+    }
+
+    private fun connectToCar() {
+        this.propertyCallbacks = listOf(
+            // 座椅通风
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_SEAT_VENTILATION,
+                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT, VehicleAreaSeat.SEAT_ROW_1_RIGHT)
+            ) { value, areaId ->
+                updateSeatState(SeatOperationInfo.COOLING, areaId, value)
+            },
+            // 座椅加热
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_SEAT_TEMPERATURE,
+                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT, VehicleAreaSeat.SEAT_ROW_1_RIGHT)
+            ) { value, areaId ->
+                updateSeatState(SeatOperationInfo.HEATING, areaId, value)
+            }
+        )
+        carService.registerPropertyListeners(this.propertyCallbacks)
+    }
+
+    private fun updateSeatState(type: SeatOperationInfo, areaId: Int, value: Any) {
+        val level = getLevelFromCarValue(type, value as Int)
+        val areaSeat = AreaSeat.getByAreaId(areaId)
+        if (areaSeat != null) {
+            toggleOperationLevel(areaSeat, type, level)
+        }
+    }
+
+    private fun updateSeatState(
         state: SingleSeatState,
         type: SeatOperationInfo,
         newLevel: Int
@@ -49,12 +74,10 @@ class SeatViewModel @Inject constructor() : ViewModel() {
         return when (type) {
             SeatOperationInfo.HEATING -> state.copy(
                 heatingLevel = newLevel,
-                coolingLevel = 0
             )
 
             SeatOperationInfo.COOLING -> state.copy(
                 coolingLevel = newLevel,
-                heatingLevel = 0
             )
 
             SeatOperationInfo.MESSAGE -> state.copy(
@@ -63,16 +86,28 @@ class SeatViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun toggleOperationLevel(areaSeat: AreaSeat, type: SeatOperationInfo) {
+    fun toggleOperationLevel(areaSeat: AreaSeat, type: SeatOperationInfo, level: Int?) {
         _operationState.update { currentState ->
             val currentSeatState = currentState.getSeatState(areaSeat)
-            val newLevel = (currentSeatState.getLevelFor(type) + 1) % 4
+            val newLevel = level ?: ((currentSeatState.getLevelFor(type) + 1) % 4)
             val updatedSeatSeat = updateSeatState(currentSeatState, type, newLevel)
 
             when (areaSeat) {
                 AreaSeat.DRIVER -> currentState.copy(driverSeat = updatedSeatSeat)
-                AreaSeat.PASSENGER -> currentState.copy(passengerSeat = updatedSeatSeat)
+                AreaSeat.COPILOT -> currentState.copy(copilotSeat = updatedSeatSeat)
             }
+        }
+    }
+
+    fun setSeatValue(seat: AreaSeat, type: SeatOperationInfo) {
+        if (type.propertyId != null) {
+            var level = (_operationState.value.getSeatState(seat).getLevelFor(type) + 1) % 4
+            if (type.values != null && level != 0) {
+                level = type.values[level - 1]
+            }
+            carService.setProperty(type.propertyId, seat.areaId, level)
+        } else {
+            toggleOperationLevel(seat, type, null)
         }
     }
 }
