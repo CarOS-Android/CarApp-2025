@@ -1,6 +1,7 @@
 package com.thoughtworks.carapp.ui.main.viewmodel
 
 import android.car.VehicleAreaDoor
+import android.car.VehicleAreaMirror
 import android.car.VehicleAreaSeat.SEAT_ROW_1_LEFT
 import android.car.VehicleAreaSeat.SEAT_ROW_1_RIGHT
 import android.car.VehicleAreaSeat.SEAT_ROW_2_CENTER
@@ -48,11 +49,6 @@ class CarViewModel @Inject constructor(
         VehicleAreaDoor.DOOR_ROW_2_LEFT to Lock.Locked,
         VehicleAreaDoor.DOOR_ROW_2_RIGHT to Lock.Locked,
     )
-
-//    private val mirrorAreaIds = listOf(
-//        VEHICLE_AREA_TYPE_GLOBAL,
-////        VehicleAreaMirror.MIRROR_DRIVER_RIGHT
-//    )
 
     private val allSeats = listOf(
         SEAT_ROW_1_LEFT,
@@ -159,15 +155,15 @@ class CarViewModel @Inject constructor(
                 }
             },
 
-//            CarService.PropertyCallback(
-//                VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
-//                mirrorAreaIds,
-//            ) { value, _ ->
-//                val newValue = if (value == 1) Toggle.On else Toggle.Off
-//                _carState.update { state ->
-//                    state.copy(airFlowState = state.airFlowState.copy(mirrorHeatState = newValue))
-//                }
-//            },
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
+                listOf(VehicleAreaMirror.MIRROR_DRIVER_LEFT or VehicleAreaMirror.MIRROR_DRIVER_RIGHT),
+            ) { value, _ ->
+                val newValue = if (value == 0) Toggle.Off else Toggle.On
+                _carState.update { state ->
+                    state.copy(airFlowState = state.airFlowState.copy(mirrorHeatState = newValue))
+                }
+            },
 
             CarService.PropertyCallback(
                 VehiclePropertyIds.HVAC_RECIRC_ON,
@@ -271,13 +267,13 @@ class CarViewModel @Inject constructor(
                 )
             }
 
-//            is ViewAction.ToggleMirrorHeat -> {
-//                carService.setPropertyForMultipleAreas(
-//                    VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
-//                    mirrorAreaIds,
-//                    state.airFlowState.mirrorHeatState.toIntValue()
-//                )
-//            }
+            is ViewAction.ToggleMirrorHeat -> {
+                carService.setProperty(
+                    VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
+                    VehicleAreaMirror.MIRROR_DRIVER_LEFT or VehicleAreaMirror.MIRROR_DRIVER_RIGHT,
+                    state.airFlowState.mirrorHeatState.toIntValue()
+                )
+            }
 
             is ViewAction.ToggleInternalCirculation -> {
                 carService.setPropertyForMultipleAreas(
@@ -286,6 +282,7 @@ class CarViewModel @Inject constructor(
                     state.airFlowState.internalCirculationState.toBoolean()
                 )
             }
+
             else -> Unit
         }
     }
