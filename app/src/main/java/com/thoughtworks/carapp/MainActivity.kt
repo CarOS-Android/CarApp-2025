@@ -91,6 +91,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Destination.CarSetting -> SettingScreen(
+                            currentState.acBoxState,
                             currentState.airFlowState,
                             toggleFrontWindowDefog = { viewModel.dispatch(ViewAction.ToggleFrontWindowDefog) },
                             toggleRearWindowDefog = { viewModel.dispatch(ViewAction.ToggleRearWindowDefog) },

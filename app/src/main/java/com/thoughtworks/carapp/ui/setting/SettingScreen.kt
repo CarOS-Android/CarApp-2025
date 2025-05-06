@@ -34,16 +34,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.components.AirFlowControlPanel
+import com.thoughtworks.carapp.ui.main.presentation.AcBoxState
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
 fun SettingScreen(
+    acBoxState: AcBoxState,
     airFlowState: AirFlowState,
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
     toggleInternalCirculation: () -> Unit
 ) {
+    var switchOn by remember { mutableStateOf(false) }
+    var acOn by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -60,13 +65,24 @@ fun SettingScreen(
                     .padding(top = 96.dp, start = 72.dp),
             ) {
                 // 左侧菜单栏
-                LeftControlBar()
+                LeftControlBar(
+                    switchOn = switchOn,
+                    acOn = acOn,
+                    switchClicked = {
+                        switchOn = !switchOn
+                    },
+                    acClicked = {
+                        if (switchOn) {
+                            acOn = !acOn
+                        }
+                    }
+                )
                 // 中央内容
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TemperatureAndFanControl()
+                    TemperatureAndFanControl(acBoxState, switchOn, acOn)
                     Spacer(modifier = Modifier.height(42.dp))
                     AirFlowModePanel(
                         airFlowState,
@@ -76,7 +92,6 @@ fun SettingScreen(
                         toggleInternalCirculation
                     )
                 }
-
                 Spacer(modifier = Modifier.width(16.dp))
             }
 
@@ -90,11 +105,11 @@ fun SettingScreen(
                 ) {
                 }
             }
-
         }
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
+            // 底部内容
             Row {
 
             }
@@ -102,26 +117,14 @@ fun SettingScreen(
     }
 }
 
-@Preview(widthDp = 1408, heightDp = 792)
 @Composable
-fun PreviewSettingScreen() {
-    SettingScreen(
-        airFlowState = AirFlowState(),
-        toggleFrontWindowDefog = {},
-        toggleRearWindowDefog = {},
-        toggleMirrorHeat = {},
-        toggleInternalCirculation = {}
-    )
-}
-
-@Composable
-fun TemperatureAndFanControl() {
+fun TemperatureAndFanControl(acBoxState: AcBoxState, switchOn: Boolean, acOn: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
-        TemperatureKnob(value = 28)
+        TemperatureKnob(value = acBoxState.driverTemperature, switchOn, acOn)
         Column {
             Image(
                 painter = painterResource(R.drawable.ic_air_vent_top),
@@ -135,12 +138,12 @@ fun TemperatureAndFanControl() {
                 contentDescription = ""
             )
         }
-        TemperatureKnob(value = 25)
+        TemperatureKnob(value = acBoxState.coPilotTemperature, switchOn = switchOn, acOn = acOn)
     }
 }
 
 @Composable
-fun TemperatureKnob(value: Int) {
+fun TemperatureKnob(value: Float, switchOn: Boolean, acOn: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier.size(216.dp),
@@ -165,17 +168,17 @@ fun TemperatureKnob(value: Int) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "28",
-                    fontSize = 48.sp,
+                    text = if (switchOn && acOn) value.toString() else "-",
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFF1F3F5)
                 )
                 Text(
-                    text = "℃",
+                    text = if (switchOn && acOn) "℃" else "",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Normal,
                     color = Color(0xFFF1F3F5),
-                    style = TextStyle(baselineShift = BaselineShift(0.2f)) // 尝试调整负值
+                    style = TextStyle(baselineShift = BaselineShift(0.1f)) // 尝试调整负值
                 )
             }
         }
@@ -217,9 +220,7 @@ fun AirFlowModePanel(
 
 
 @Composable
-fun LeftControlBar() {
-    var switchOn by remember { mutableStateOf(false) }
-    var acOn by remember { mutableStateOf(false) }
+fun LeftControlBar(switchOn: Boolean, acOn: Boolean, switchClicked: () -> Unit, acClicked: () -> Unit) {
     var autoOn by remember { mutableStateOf(false) }
     var fragranceOn by remember { mutableStateOf(false) }
     Column(
@@ -232,7 +233,7 @@ fun LeftControlBar() {
             activatedIconResId = R.drawable.ic_switch_activated,
             closedIconResId = R.drawable.ic_switch_closed
         ) {
-            switchOn = !switchOn
+            switchClicked()
         }
         CustomIconButton(
             label = "A/C",
@@ -240,9 +241,7 @@ fun LeftControlBar() {
             activatedIconResId = R.drawable.ic_ac_activated,
             closedIconResId = R.drawable.ic_ac_closed
         ) {
-            if (switchOn) {
-                acOn = !acOn
-            }
+            acClicked()
         }
         CustomIconButton(
             label = "Auto",
@@ -281,5 +280,18 @@ fun CustomIconButton(
         modifier = Modifier
             .size(80.dp)
             .clickable { onClick() },
+    )
+}
+
+@Preview(widthDp = 1408, heightDp = 792)
+@Composable
+fun PreviewSettingScreen() {
+    SettingScreen(
+        acBoxState = AcBoxState(),
+        airFlowState = AirFlowState(),
+        toggleFrontWindowDefog = {},
+        toggleRearWindowDefog = {},
+        toggleMirrorHeat = {},
+        toggleInternalCirculation = {}
     )
 }
