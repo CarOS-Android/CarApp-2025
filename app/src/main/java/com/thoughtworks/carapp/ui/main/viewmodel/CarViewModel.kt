@@ -1,60 +1,37 @@
 package com.thoughtworks.carapp.ui.main.viewmodel
 
 import android.car.VehicleAreaDoor
-import android.car.VehicleAreaSeat
-import android.car.VehicleAreaType
+import android.car.VehicleAreaSeat.SEAT_ROW_1_LEFT
+import android.car.VehicleAreaSeat.SEAT_ROW_1_RIGHT
+import android.car.VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL
 import android.car.VehicleIgnitionState
 import android.car.VehiclePropertyIds
-import android.util.Log
+import android.car.VehiclePropertyIds.HAZARD_LIGHTS_SWITCH
+import android.car.VehiclePropertyIds.HEADLIGHTS_SWITCH
+import android.car.VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH
+import android.car.VehiclePropertyIds.HVAC_TEMPERATURE_SET
 import androidx.lifecycle.ViewModel
 import com.thoughtworks.carapp.service.CarService
 import com.thoughtworks.carapp.ui.main.Lock
 import com.thoughtworks.carapp.ui.main.Toggle
+import com.thoughtworks.carapp.ui.main.components.TemperatureType
+import com.thoughtworks.carapp.ui.main.presentation.CarState
+import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class CarViewModel @Inject constructor(
     private val carService: CarService // 通过构造函数注入
 ) : ViewModel() {
-    // 车辆引擎状态
-    private val _engineState = MutableStateFlow(Toggle.Off)
-    val engineState: StateFlow<Toggle> = _engineState.asStateFlow()
 
-    // 自动驻车
-    private val _autoHoldState = MutableStateFlow(Toggle.Off)
-    val autoHoldState: StateFlow<Toggle> = _autoHoldState.asStateFlow()
+    private val _carState = MutableStateFlow(CarState())
+    val carState: StateFlow<CarState> = _carState.asStateFlow()
 
-    // 刹车状态
-    private val _parkingBrakeOnState = MutableStateFlow(Toggle.Off)
-    val parkingBrakeOnState: StateFlow<Toggle> = _parkingBrakeOnState.asStateFlow()
-
-    // 远光灯
-    private val _highBeamState = MutableStateFlow(Toggle.Off)
-    val highBeamState: StateFlow<Toggle> = _highBeamState.asStateFlow()
-
-    // 危险信号灯-示宽灯
-    private val _hazardLightsState = MutableStateFlow(Toggle.Off)
-    val hazardLightsState: StateFlow<Toggle> = _hazardLightsState.asStateFlow()
-
-    // 车前灯-近光灯
-    private val _headLightsState = MutableStateFlow(Toggle.Off)
-    val headLightsState: StateFlow<Toggle> = _headLightsState.asStateFlow()
-
-    // 主驾-空调温度
-    private val _diverTemperature = MutableStateFlow(0.0f)
-    val diverTemperature: StateFlow<Float> = _diverTemperature.asStateFlow()
-
-    // 副驾-空调温度
-    private val _coPilotTemperature = MutableStateFlow(0.0f)
-    val coPilotTemperature: StateFlow<Float> = _coPilotTemperature.asStateFlow()
-
-    // 门锁状态
-    private val _carLockState = MutableStateFlow(Lock.Locked)
-    val carLockState: StateFlow<Lock> = _carLockState.asStateFlow()
     private val doorAreaIds = listOf(
         VehicleAreaDoor.DOOR_ROW_1_LEFT,
         VehicleAreaDoor.DOOR_ROW_1_RIGHT,
@@ -77,97 +54,75 @@ class CarViewModel @Inject constructor(
     private fun connectToCar() {
         this.propertyCallbacks = listOf(
             CarService.PropertyCallback(VehiclePropertyIds.IGNITION_STATE, null) { value, _ ->
-                _engineState.value = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
+                val newValue = if (value == VehicleIgnitionState.ON) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(carControlState = state.carControlState.copy(engineState = newValue))
+                }
             },
             CarService.PropertyCallback(
                 VehiclePropertyIds.PARKING_BRAKE_AUTO_APPLY,
                 null
             ) { value, _ ->
-                _autoHoldState.value = if (value as? Boolean == true) Toggle.On else Toggle.Off
+                val newValue = if (value as? Boolean == true) Toggle.On else Toggle.Off
+                _carState.update {
+                    state -> state.copy(carControlState = state.carControlState.copy(autoHoldState = newValue))
+                }
+
             },
             CarService.PropertyCallback(VehiclePropertyIds.PARKING_BRAKE_ON, null) { value, _ ->
-                _parkingBrakeOnState.value =
-                    if (value as? Boolean == true) Toggle.On else Toggle.Off
+                val newValue = if (value as? Boolean == true) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(carControlState = state.carControlState.copy(parkingBrakeState = newValue))
+                }
             },
             CarService.PropertyCallback(
-                VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH,
+                HIGH_BEAM_LIGHTS_SWITCH,
                 null
             ) { value, _ ->
-                _highBeamState.value = if (value == 1) Toggle.On else Toggle.Off
+                val newValue = if (value == 1) Toggle.On else Toggle.Off
+                _carState.update {
+                    state -> state.copy(carLightState = state.carLightState.copy(highBeamState = newValue))
+                }
             },
-            CarService.PropertyCallback(VehiclePropertyIds.HAZARD_LIGHTS_SWITCH, null) { value, _ ->
-                _hazardLightsState.value = if (value == 1) Toggle.On else Toggle.Off
+            CarService.PropertyCallback(HAZARD_LIGHTS_SWITCH, null) { value, _ ->
+                val newValue = if (value == 1) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(carLightState = state.carLightState.copy(hazardLightsState = newValue))
+                }
             },
-            CarService.PropertyCallback(VehiclePropertyIds.HEADLIGHTS_SWITCH, null) { value, _ ->
-                _headLightsState.value = if (value == 1) Toggle.On else Toggle.Off
+            CarService.PropertyCallback(HEADLIGHTS_SWITCH, null) { value, _ ->
+                val newValue = if (value == 1) Toggle.On else Toggle.Off
+                _carState.update { state ->
+                    state.copy(carLightState = state.carLightState.copy(headLightsState = newValue))
+                }
             },
             CarService.PropertyCallback(
                 VehiclePropertyIds.DOOR_LOCK,
                 doorAreaIds
             ) { value, areaId ->
                 doorStates[areaId] = if (value as? Boolean == true) Lock.Locked else Lock.Unlocked
-                _carLockState.value = doorStates.values.reduce { acc, b -> acc or b }
+                val newValue = doorStates.values.reduce { acc, b -> acc or b }
+                _carState.update { state ->
+                    state.copy(carLockState = newValue)
+                }
             },
             CarService.PropertyCallback(
-                VehiclePropertyIds.HVAC_TEMPERATURE_SET,
-                listOf(VehicleAreaSeat.SEAT_ROW_1_LEFT, VehicleAreaSeat.SEAT_ROW_1_RIGHT)
+                HVAC_TEMPERATURE_SET,
+                listOf(SEAT_ROW_1_LEFT, SEAT_ROW_1_RIGHT)
             ) { value, areaId ->
-                if (areaId == VehicleAreaSeat.SEAT_ROW_1_LEFT) {
-                    _diverTemperature.value = value as Float
+                if (areaId == SEAT_ROW_1_LEFT) {
+                    _carState.update {
+                        state -> state.copy(acBoxState = state.acBoxState.copy(driverTemperature = value as Float))
+                    }
                 }
-                if (areaId == VehicleAreaSeat.SEAT_ROW_1_RIGHT) {
-                    _coPilotTemperature.value = value as Float
+                if (areaId == SEAT_ROW_1_RIGHT) {
+                    _carState.update {
+                        state -> state.copy(acBoxState = state.acBoxState.copy(coPilotTemperature = value as Float))
+                    }
                 }
             }
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
-    }
-
-    fun setDiverTemperature(value: Float) {
-        carService.setProperty(VehiclePropertyIds.HVAC_TEMPERATURE_SET, VehicleAreaSeat.SEAT_ROW_1_LEFT, value)
-    }
-
-    fun setCoPilotTemperature(value: Float) {
-        carService.setProperty(VehiclePropertyIds.HVAC_TEMPERATURE_SET, VehicleAreaSeat.SEAT_ROW_1_RIGHT, value)
-    }
-
-    fun toggleHazardLights() {
-        val newState = if (_hazardLightsState.value == Toggle.On) {
-            Toggle.Off
-        } else {
-            Toggle.On
-        }
-        _hazardLightsState.value = newState
-        setHazardLights(newState.toIntValue())
-    }
-
-    fun toggleHighBeamLights() {
-        val newState = if (_highBeamState.value == Toggle.On) {
-            Toggle.Off
-        } else {
-            Toggle.On
-        }
-        _highBeamState.value = newState
-        setHighBeamLights(newState.toIntValue())
-    }
-
-    fun toggleHeadLights() {
-        val newState = if (_headLightsState.value == Toggle.On) {
-            Toggle.Off
-        } else {
-            Toggle.On
-        }
-        _headLightsState.value = newState
-        setHeadLights(newState.toIntValue())
-    }
-
-    fun toggleCarLock() {
-        val newValue = _carLockState.value.switch() != Lock.Unlocked
-        carService.setPropertyForMultipleAreas(
-            VehiclePropertyIds.DOOR_LOCK,
-            doorAreaIds,
-            newValue
-        )
     }
 
     // 将 Toggle 转换为 Int
@@ -176,31 +131,97 @@ class CarViewModel @Inject constructor(
         Toggle.Off -> 0
     }
 
-    private fun setHighBeamLights(value: Int) {
-        carService.setProperty(
-            Int::class.java,
-            VehiclePropertyIds.HIGH_BEAM_LIGHTS_SWITCH,
-            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
-            value
-        )
+    fun dispatch(action: ViewAction) {
+        _carState.update { reduce(carState.value, action) }
+        sideEffect(carState.value, action)
     }
 
-    private fun setHazardLights(value: Int) {
-        carService.setProperty(
-            Int::class.java,
-            VehiclePropertyIds.HAZARD_LIGHTS_SWITCH,
-            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
-            value
-        )
+    private fun sideEffect(
+        state: CarState,
+        action: ViewAction
+    ) {
+        when (action) {
+            is ViewAction.ToggleCarLock -> {
+                val newValue = state.carLockState != Lock.Unlocked
+                carService.setPropertyForMultipleAreas(
+                    VehiclePropertyIds.DOOR_LOCK,
+                    doorAreaIds,
+                    newValue
+                )
+            }
+
+            is ViewAction.ToggleHeadLights -> {
+                carService.setProperty(
+                    Int::class.java,
+                    HEADLIGHTS_SWITCH,
+                    VEHICLE_AREA_TYPE_GLOBAL,
+                    state.carLightState.headLightsState.toIntValue()
+                )
+            }
+
+            is ViewAction.ToggleHazardLights -> {
+                carService.setProperty(
+                    Int::class.java,
+                    HAZARD_LIGHTS_SWITCH,
+                    VEHICLE_AREA_TYPE_GLOBAL,
+                    state.carLightState.hazardLightsState.toIntValue()
+                )
+            }
+
+            is ViewAction.ToggleHighBeamLights -> {
+                carService.setProperty(
+                    Int::class.java,
+                    HIGH_BEAM_LIGHTS_SWITCH,
+                    VEHICLE_AREA_TYPE_GLOBAL,
+                    state.carLightState.highBeamState.toIntValue()
+                )
+            }
+
+            is ViewAction.OnSweepStep -> {
+                if (action.temperatureType == TemperatureType.Driver) {
+                    carService.setProperty(
+                        HVAC_TEMPERATURE_SET,
+                        SEAT_ROW_1_LEFT,
+                        action.temperature
+                    )
+                } else {
+                    carService.setProperty(
+                        HVAC_TEMPERATURE_SET,
+                        SEAT_ROW_1_RIGHT,
+                        action.temperature
+                    )
+                }
+            }
+            else -> Unit
+        }
     }
 
-    private fun setHeadLights(value: Int) {
-        carService.setProperty(
-            Int::class.java,
-            VehiclePropertyIds.HEADLIGHTS_SWITCH,
-            VehicleAreaType.VEHICLE_AREA_TYPE_GLOBAL,
-            value
-        )
+    private fun reduce(
+        state: CarState,
+        action: ViewAction,
+    ): CarState {
+        return when (action) {
+            is ViewAction.ToggleCarLock -> {
+                state.copy(carLockState = state.carLockState.switch())
+            }
+            is ViewAction.ToggleHeadLights -> {
+                state.copy(carLightState = state.carLightState.copy(headLightsState = state.carLightState.headLightsState.toggle()))
+            }
+            is ViewAction.ToggleHazardLights -> {
+                state.copy(carLightState = state.carLightState.copy(hazardLightsState = state.carLightState.hazardLightsState.toggle()))
+            }
+            is ViewAction.ToggleHighBeamLights -> {
+                state.copy(carLightState = state.carLightState.copy(highBeamState = state.carLightState.highBeamState.toggle()))
+            }
+            is ViewAction.OnSweepStep -> {
+                if (action.temperatureType == TemperatureType.Driver) {
+                    state.copy(acBoxState = state.acBoxState.copy(driverTemperature = action.temperature))
+                } else {
+                    state.copy(acBoxState = state.acBoxState.copy(coPilotTemperature = action.temperature))
+                }
+            }
+            else -> state
+        }
     }
 
     override fun onCleared() {
