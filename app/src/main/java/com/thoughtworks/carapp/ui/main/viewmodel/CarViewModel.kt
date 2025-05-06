@@ -55,9 +55,8 @@ class CarViewModel @Inject constructor(
         SEAT_ROW_1_RIGHT,
         SEAT_ROW_2_LEFT,
         SEAT_ROW_2_RIGHT,
-        SEAT_ROW_2_CENTER,
-
-        )
+        SEAT_ROW_2_CENTER
+    )
 
     private var propertyCallbacks: List<CarService.PropertyCallback> = listOf()
 
@@ -137,24 +136,19 @@ class CarViewModel @Inject constructor(
             },
             CarService.PropertyCallback(
                 VehiclePropertyIds.HVAC_DEFROSTER,
-                listOf(VehicleAreaWindow.WINDOW_FRONT_WINDSHIELD),
-            ) { value, _ ->
+                listOf(VehicleAreaWindow.WINDOW_FRONT_WINDSHIELD, VehicleAreaWindow.WINDOW_REAR_WINDSHIELD)
+            ) { value, areaId ->
                 val newValue = if (value == true) Toggle.On else Toggle.Off
-                _carState.update { state ->
-                    state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = newValue))
+                if (areaId == VehicleAreaWindow.WINDOW_FRONT_WINDSHIELD) {
+                    _carState.update { state ->
+                        state.copy(airFlowState = state.airFlowState.copy(frontWindowDefogState = newValue))
+                    }
+                } else {
+                    _carState.update { state ->
+                        state.copy(airFlowState = state.airFlowState.copy(rearWindowDefogState = newValue))
+                    }
                 }
             },
-
-            CarService.PropertyCallback(
-                VehiclePropertyIds.HVAC_DEFROSTER,
-                listOf(VehicleAreaWindow.WINDOW_REAR_WINDSHIELD),
-            ) { value, _ ->
-                val newValue = if (value == true) Toggle.On else Toggle.Off
-                _carState.update { state ->
-                    state.copy(airFlowState = state.airFlowState.copy(rearWindowDefogState = newValue))
-                }
-            },
-
             CarService.PropertyCallback(
                 VehiclePropertyIds.HVAC_SIDE_MIRROR_HEAT,
                 listOf(VehicleAreaMirror.MIRROR_DRIVER_LEFT or VehicleAreaMirror.MIRROR_DRIVER_RIGHT),
