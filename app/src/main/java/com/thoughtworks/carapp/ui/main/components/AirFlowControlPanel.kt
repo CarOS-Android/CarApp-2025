@@ -26,11 +26,8 @@ fun AirFlowControlPanel(
     toggleMirrorHeat: () -> Unit,
     toggleInternalCirculation: () -> Unit,
 ) {
-
-
     Box(
-        modifier = Modifier
-            .wrapContentSize(),
+        modifier = Modifier.wrapContentSize(),
         contentAlignment = androidx.compose.ui.Alignment.Center,
     ) {
         Image(
