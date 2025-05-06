@@ -11,6 +11,5 @@ sealed interface ViewAction {
     object ToggleRearWindowDefog: ViewAction
     object ToggleMirrorHeat: ViewAction
     object ToggleInternalCirculation: ViewAction
-    object ToggleExternalCirculation: ViewAction
     data class OnSweepStep(val temperature: Float, val temperatureType: TemperatureType) : ViewAction
 }

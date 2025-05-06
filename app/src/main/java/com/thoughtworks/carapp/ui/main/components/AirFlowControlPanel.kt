@@ -24,7 +24,6 @@ fun AirFlowControlPanel(
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
-    toggleExternalCirculation: () -> Unit,
     toggleInternalCirculation: () -> Unit,
 ) {
 
@@ -93,8 +92,8 @@ fun AirFlowControlPanel(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 Image(
-                    modifier = Modifier.clickable { toggleExternalCirculation() },
-                    painter = when (airFlowState.externalCirculationState) {
+                    modifier = Modifier.clickable { toggleInternalCirculation() },
+                    painter = when (airFlowState.internalCirculationState) {
                         Toggle.Off -> painterResource(id = R.drawable.ic_ac_external_circulation_on)
                         Toggle.On -> painterResource(id = R.drawable.ic_ac_external_circulation_off)
                     },
@@ -103,8 +102,8 @@ fun AirFlowControlPanel(
                 Image(
                     modifier = Modifier.clickable { toggleInternalCirculation() },
                     painter = when (airFlowState.internalCirculationState) {
-                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_internal_circulation_on)
-                        Toggle.On -> painterResource(id = R.drawable.ic_ac_internal_circulation_off)
+                        Toggle.Off -> painterResource(id = R.drawable.ic_ac_internal_circulation_off)
+                        Toggle.On -> painterResource(id = R.drawable.ic_ac_internal_circulation_on)
                     },
                     contentDescription = "air flow control panel",
                 )
@@ -121,7 +120,6 @@ fun PreviewAirFlowControlPanel() {
             frontWindowDefogState = Toggle.On,
             rearWindowDefogState = Toggle.Off,
             mirrorHeatState = Toggle.Off,
-            externalCirculationState = Toggle.Off,
             internalCirculationState = Toggle.Off,
-        ), {}, {}, {}, {}, {})
+        ), {}, {}, {}, {})
 }

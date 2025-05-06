@@ -95,7 +95,6 @@ class MainActivity : ComponentActivity() {
                             toggleFrontWindowDefog = { viewModel.dispatch(ViewAction.ToggleFrontWindowDefog) },
                             toggleRearWindowDefog = { viewModel.dispatch(ViewAction.ToggleRearWindowDefog) },
                             toggleMirrorHeat = { viewModel.dispatch(ViewAction.ToggleMirrorHeat) },
-                            toggleExternalCirculation = { viewModel.dispatch(ViewAction.ToggleExternalCirculation) },
                             toggleInternalCirculation = { viewModel.dispatch(ViewAction.ToggleInternalCirculation) }
                         )
 

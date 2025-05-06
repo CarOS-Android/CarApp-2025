@@ -178,7 +178,6 @@ class CarViewModel @Inject constructor(
                     state.copy(
                         airFlowState = state.airFlowState.copy(
                             internalCirculationState = newValue,
-                            externalCirculationState = newValue.toggle()
                         )
                     )
                 }
@@ -287,14 +286,6 @@ class CarViewModel @Inject constructor(
                     state.airFlowState.internalCirculationState.toBoolean()
                 )
             }
-            is ViewAction.ToggleExternalCirculation -> {
-                carService.setPropertyForMultipleAreas(
-                    VehiclePropertyIds.HVAC_RECIRC_ON,
-                    allSeats,
-                    state.airFlowState.externalCirculationState.toBoolean()
-                )
-            }
-
             else -> Unit
         }
     }
@@ -344,16 +335,6 @@ class CarViewModel @Inject constructor(
                 state.copy(
                     airFlowState = state.airFlowState.copy(
                         internalCirculationState = state.airFlowState.internalCirculationState.toggle(),
-                        externalCirculationState = state.airFlowState.externalCirculationState.toggle()
-                    )
-                )
-            }
-
-            is ViewAction.ToggleExternalCirculation -> {
-                state.copy(
-                    airFlowState = state.airFlowState.copy(
-                        externalCirculationState = state.airFlowState.externalCirculationState.toggle(),
-                        internalCirculationState = state.airFlowState.internalCirculationState.toggle()
                     )
                 )
             }

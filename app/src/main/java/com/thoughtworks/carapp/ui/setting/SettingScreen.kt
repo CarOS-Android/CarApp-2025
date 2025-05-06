@@ -39,7 +39,6 @@ fun SettingScreen(
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
-    toggleExternalCirculation: () -> Unit,
     toggleInternalCirculation: () -> Unit
 ) {
     Row(
@@ -65,7 +64,6 @@ fun SettingScreen(
                 toggleFrontWindowDefog,
                 toggleRearWindowDefog,
                 toggleMirrorHeat,
-                toggleExternalCirculation,
                 toggleInternalCirculation
             )
         }
@@ -82,7 +80,6 @@ fun PreviewSettingScreen() {
         toggleFrontWindowDefog = {},
         toggleRearWindowDefog = {},
         toggleMirrorHeat = {},
-        toggleExternalCirculation = {},
         toggleInternalCirculation = {}
     )
 }
@@ -124,7 +121,6 @@ fun AirFlowModePanel(
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
-    toggleExternalCirculation: () -> Unit,
     toggleInternalCirculation: () -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -133,7 +129,6 @@ fun AirFlowModePanel(
             toggleFrontWindowDefog,
             toggleRearWindowDefog,
             toggleMirrorHeat,
-            toggleExternalCirculation,
             toggleInternalCirculation
         )
     }
