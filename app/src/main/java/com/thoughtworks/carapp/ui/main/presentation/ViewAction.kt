@@ -12,4 +12,5 @@ sealed interface ViewAction {
     object ToggleMirrorHeat: ViewAction
     object ToggleInternalCirculation: ViewAction
     data class OnSweepStep(val temperature: Float, val temperatureType: TemperatureType) : ViewAction
+    data class OnAirVolumeChange(val airVolume: Int) : ViewAction
 }

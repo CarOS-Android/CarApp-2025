@@ -12,8 +12,8 @@ import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
 import com.thoughtworks.carapp.ui.main.components.TemperatureType
 import com.thoughtworks.carapp.ui.main.presentation.CarState
+import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 
-@Preview(widthDp = 1408, heightDp = 792)
 @Composable
 fun MainScreen(
     state: CarState,
@@ -21,7 +21,8 @@ fun MainScreen(
     onSweepStep: (Float, TemperatureType) -> Unit,
     toggleHeadLights: () -> Unit,
     toggleHazardLights: () -> Unit,
-    toggleHighBeamLights: () -> Unit
+    toggleHighBeamLights: () -> Unit,
+    onAirVolumeChange: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -40,6 +41,7 @@ fun MainScreen(
                 acBoxState = state.acBoxState,
                 toggleCarLock = toggleCarLock,
                 onSweepStep = onSweepStep,
+                onAirVolumeChange = onAirVolumeChange,
                 toggleHeadLights = toggleHeadLights,
                 toggleHazardLights = toggleHazardLights,
                 toggleHighBeamLights = toggleHighBeamLights,
@@ -64,7 +66,10 @@ fun MainScreenPreview() {
         onSweepStep = { _, _ -> },
         toggleHeadLights = {},
         toggleHazardLights = {},
-        toggleHighBeamLights = {}
+        toggleHighBeamLights = {},
+        onAirVolumeChange = { it ->
+            viewModel.dispatch(ViewAction.OnAirVolumeChange(it))
+        }
     )
 }
 

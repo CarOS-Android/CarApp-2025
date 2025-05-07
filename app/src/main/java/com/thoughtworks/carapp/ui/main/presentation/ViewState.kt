@@ -32,6 +32,7 @@ data class CarLightState(
 data class AcBoxState(
     val driverTemperature: Float = 0.0f,
     val coPilotTemperature: Float = 0.0f,
+    val airVolumeState: Int = 0,
 )
 
 /**

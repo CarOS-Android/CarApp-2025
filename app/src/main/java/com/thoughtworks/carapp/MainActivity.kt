@@ -79,6 +79,9 @@ class MainActivity : ComponentActivity() {
                             onSweepStep = { it, temperatureType ->
                                 viewModel.dispatch(ViewAction.OnSweepStep(it, temperatureType))
                             },
+                            onAirVolumeChange = {
+                                viewModel.dispatch(ViewAction.OnAirVolumeChange(it))
+                            },
                             toggleHeadLights = {
                                 viewModel.dispatch(ViewAction.ToggleHeadLights)
                             },

@@ -32,10 +32,14 @@ import com.thoughtworks.carapp.R
 
 @Preview(widthDp = 1408, heightDp = 792)
 @Composable
-fun AirCondition(label: String = "123", currentValue: Float = 1.0F, handleSweepStep: (Float) -> Unit = {}) {
+fun AirCondition(
+    label: String = "123", currentValue: Float = 1.0F, handleSweepStep: (Float) -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
     ) {
         val isTemperatureDockVisible = remember { mutableStateOf(false) }
         var text by remember { mutableFloatStateOf(currentValue) }
