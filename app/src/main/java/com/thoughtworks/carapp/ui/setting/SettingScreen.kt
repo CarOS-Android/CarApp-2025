@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -33,7 +34,8 @@ fun SeatControlRow(seatState: SeatControlUiState, handleEvent: (SeatEvent) -> Un
     Row(
         modifier = Modifier
             .height(207.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(start = 53.dp, end = 30.dp),
         horizontalArrangement = Arrangement.spacedBy(40.dp)
     ) {
         AreaSeat.entries.forEach { seat ->
