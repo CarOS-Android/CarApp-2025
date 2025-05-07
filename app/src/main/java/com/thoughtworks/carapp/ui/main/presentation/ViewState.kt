@@ -46,6 +46,7 @@ data class AirFlowState(
     val rearWindowDefogState: Toggle = Toggle.Off,
     val mirrorHeatState: Toggle = Toggle.Off,
     val internalCirculationState: Toggle = Toggle.On,
+    val fanState: Int = 0,
 )
 
 data class CarState(

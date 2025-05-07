@@ -118,5 +118,6 @@ fun PreviewAirFlowControlPanel() {
             rearWindowDefogState = Toggle.Off,
             mirrorHeatState = Toggle.Off,
             internalCirculationState = Toggle.Off,
+            fanState = 1,
         ), {}, {}, {}, {})
 }

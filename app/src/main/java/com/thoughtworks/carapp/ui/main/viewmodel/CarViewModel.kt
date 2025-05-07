@@ -172,6 +172,19 @@ class CarViewModel @Inject constructor(
                     )
                 }
             },
+            CarService.PropertyCallback(
+                VehiclePropertyIds.HVAC_FAN_SPEED,
+                allSeats,
+            ) { value, _ ->
+                val newValue = value as Int
+                _carState.update { state ->
+                    state.copy(
+                        airFlowState = state.airFlowState.copy(
+                            fanState = newValue,
+                        )
+                    )
+                }
+            },
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
