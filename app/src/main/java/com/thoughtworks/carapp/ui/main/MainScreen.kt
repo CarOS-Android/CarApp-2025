@@ -12,7 +12,6 @@ import com.thoughtworks.carapp.ui.main.components.CarControl
 import com.thoughtworks.carapp.ui.main.components.CarMedia
 import com.thoughtworks.carapp.ui.main.components.TemperatureType
 import com.thoughtworks.carapp.ui.main.presentation.CarState
-import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 
 @Composable
 fun MainScreen(
@@ -67,9 +66,7 @@ fun MainScreenPreview() {
         toggleHeadLights = {},
         toggleHazardLights = {},
         toggleHighBeamLights = {},
-        onAirVolumeChange = { it ->
-            viewModel.dispatch(ViewAction.OnAirVolumeChange(it))
-        }
+        onAirVolumeChange = {}
     )
 }
 

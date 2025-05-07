@@ -179,12 +179,12 @@ class CarViewModel @Inject constructor(
                 val newValue = value as Int
                 _carState.update { state ->
                     state.copy(
-                        airFlowState = state.airFlowState.copy(
-                            fanState = newValue,
+                        acBoxState = state.acBoxState.copy(
+                            airVolumeState = newValue,
                         )
                     )
                 }
-            },
+            }
         )
         carService.registerPropertyListeners(this.propertyCallbacks)
     }
@@ -290,6 +290,14 @@ class CarViewModel @Inject constructor(
                 )
             }
 
+            is ViewAction.OnAirVolumeChange -> {
+                carService.setPropertyForMultipleAreas(
+                    VehiclePropertyIds.HVAC_FAN_SPEED,
+                    allSeats,
+                    action.airVolume
+                )
+            }
+
             else -> Unit
         }
     }
@@ -342,6 +350,15 @@ class CarViewModel @Inject constructor(
                     )
                 )
             }
+            is ViewAction.OnAirVolumeChange -> {
+                state.copy(
+                    acBoxState = state.acBoxState.copy(
+                        airVolumeState = action.airVolume,
+                    )
+                )
+            }
+
+            else -> state
         }
     }
 

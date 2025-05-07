@@ -18,11 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtworks.blindhmi.ui.component.container.slider.Slider
-import com.thoughtworks.blindhmi.ui.composable.ComposeOnSlideListener
 import com.thoughtworks.blindhmi.ui.composable.border
 import com.thoughtworks.blindhmi.ui.composable.center
 import com.thoughtworks.blindhmi.ui.composable.indicator
-import com.thoughtworks.blindhmi.ui.composable.slider.ComposeBlindHMISlider
+import com.thoughtworks.blindhmi.ui.composable.stepper.ComposeBlindHMILoopStepper
 import com.thoughtworks.blindhmi.ui.utils.moveDown
 import com.thoughtworks.blindhmi.ui.utils.moveUp
 import com.thoughtworks.carapp.R
@@ -41,19 +40,21 @@ fun AirVolume(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier.size(100.dp), // 根据旋钮大小调整
+            modifier = Modifier.size(100.dp),
             contentAlignment = Alignment.Center
         )
         {
-            ComposeBlindHMISlider(
+            ComposeBlindHMILoopStepper(
                 modifier = Modifier.size(84.dp),
                 centerBackgroundRadius = 12.dp,
                 centerBackgroundRes = R.drawable.ic_dock_temperature_bg,
-                stepOrientation = Slider.COUNTERCLOCKWISE,
-                startAngle = -120f,
-                endAngle = 239f,
-                startValue = 0f,
-                endValue = 4f,
+                stepOrientation = Slider.CLOCKWISE,
+                startAngle = 0f,
+                currentValue = currentVolumeState.toFloat(),
+                minValue = 0f,
+                maxValue = 4f,
+                stepValue = 1f,
+                steps = 4,
                 centerHotspotRadius = 30.dp,
                 border = {
                     border(context) {
@@ -99,16 +100,14 @@ fun AirVolume(
                         visible = true
                     }
                 },
-                onSlideListener = ComposeOnSlideListener(
-                    onValueSelectedFunc = { value ->
-                        onAirVolumeChange(value.toInt())
-                    },
-                    onValueHoverFunc = { value ->
-                        internalVolumeState = value.toInt()
-                    }
-                ),
                 onActive = { this.moveDown() },
-                onInactive = { this.moveUp() }
+                onInactive = {
+                    this.moveUp()
+                    onAirVolumeChange(internalVolumeState)
+                },
+                onSweepStep = { _, stepperValue ->
+                    internalVolumeState = stepperValue.toInt()
+                }
             )
         }
         Text(label, color = Color.White)

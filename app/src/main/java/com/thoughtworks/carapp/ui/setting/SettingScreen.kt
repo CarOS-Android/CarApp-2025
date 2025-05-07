@@ -87,6 +87,7 @@ fun SettingScreen(
                     Spacer(modifier = Modifier.height(42.dp))
                     AirFlowModePanel(
                         airFlowState,
+                        acBoxState.airVolumeState,
                         toggleFrontWindowDefog,
                         toggleRearWindowDefog,
                         toggleMirrorHeat,
@@ -189,6 +190,7 @@ fun TemperatureKnob(value: Float, switchOn: Boolean, acOn: Boolean) {
 @Composable
 fun AirFlowModePanel(
     airFlowState: AirFlowState,
+    airVolumeState: Int,
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
@@ -199,7 +201,7 @@ fun AirFlowModePanel(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        FanStateIcon(airFlowState.fanState)
+        FanStateIcon(airVolumeState)
         AirFlowControlPanel(
             airFlowState,
             toggleFrontWindowDefog,
@@ -207,13 +209,18 @@ fun AirFlowModePanel(
             toggleMirrorHeat,
             toggleInternalCirculation
         )
-        FanStateIcon(airFlowState.fanState)
+        FanStateIcon(airVolumeState)
     }
 }
 
 
 @Composable
-fun LeftControlBar(switchOn: Boolean, acOn: Boolean, switchClicked: () -> Unit, acClicked: () -> Unit) {
+fun LeftControlBar(
+    switchOn: Boolean,
+    acOn: Boolean,
+    switchClicked: () -> Unit,
+    acClicked: () -> Unit
+) {
     var autoOn by remember { mutableStateOf(false) }
     var fragranceOn by remember { mutableStateOf(false) }
     Column(
