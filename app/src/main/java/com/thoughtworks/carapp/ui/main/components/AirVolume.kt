@@ -51,10 +51,10 @@ fun AirVolume(
                 stepOrientation = Slider.CLOCKWISE,
                 startAngle = 0f,
                 currentValue = currentVolumeState.toFloat(),
-                minValue = 0f,
+                minValue = 1f,
                 maxValue = 4f,
                 stepValue = 1f,
-                steps = 4,
+                steps = 3,
                 centerHotspotRadius = 30.dp,
                 border = {
                     border(context) {
@@ -79,11 +79,11 @@ fun AirVolume(
                                 // 当前风量图层覆盖上来
                                 Image(
                                     painter = when (internalVolumeState) {
-                                        0 -> painterResource(id = R.drawable.ic_ac_air_volume_center_0)
                                         1 -> painterResource(id = R.drawable.ic_ac_air_volume_center_1)
                                         2 -> painterResource(id = R.drawable.ic_ac_air_volume_center_2)
                                         3 -> painterResource(id = R.drawable.ic_ac_air_volume_center_3)
-                                        else -> painterResource(id = R.drawable.ic_ac_air_volume_center_3)
+                                        4 -> painterResource(id = R.drawable.ic_ac_air_volume_center_4)
+                                        else -> painterResource(id = R.drawable.ic_ac_air_volume_center_4)
                                     },
                                     contentDescription = null
                                 )

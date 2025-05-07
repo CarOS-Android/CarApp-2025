@@ -23,10 +23,10 @@ fun FanStateIcon(fanState: Int) {
                 .padding(top = 20.dp),
             contentDescription = "风速",
             painter = when (fanState) {
-                0 -> painterResource(id = R.drawable.ic_fan_speed_0)
                 1 -> painterResource(id = R.drawable.ic_fan_speed_1)
                 2 -> painterResource(id = R.drawable.ic_fan_speed_2)
                 3 -> painterResource(id = R.drawable.ic_fan_speed_3)
+                4 -> painterResource(id = R.drawable.ic_fan_speed_4)
                 else -> painterResource(id = R.drawable.ic_fan_speed_4)
             },
         )
