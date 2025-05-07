@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.components.AirFlowControlPanel
+import com.thoughtworks.carapp.ui.main.components.FanStateIcon
 import com.thoughtworks.carapp.ui.main.presentation.AcBoxState
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
@@ -198,11 +199,7 @@ fun AirFlowModePanel(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_wind_speed),
-            modifier = Modifier.size(106.dp).padding(top = 20.dp),
-            contentDescription = "风速"
-        )
+        FanStateIcon(airFlowState.fanState)
         AirFlowControlPanel(
             airFlowState,
             toggleFrontWindowDefog,
@@ -210,11 +207,7 @@ fun AirFlowModePanel(
             toggleMirrorHeat,
             toggleInternalCirculation
         )
-        Image(
-            painter = painterResource(R.drawable.ic_wind_speed),
-            modifier = Modifier.size(106.dp).padding(top = 20.dp),
-            contentDescription = "风速"
-        )
+        FanStateIcon(airFlowState.fanState)
     }
 }
 
