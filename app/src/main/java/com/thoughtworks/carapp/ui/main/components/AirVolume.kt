@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,7 +33,7 @@ fun AirVolume(
     label: String,
     onAirVolumeChange: (Int) -> Unit
 ) {
-    var internalVolumeState by remember { mutableStateOf(currentVolumeState) }
+    var internalVolumeState by remember { mutableIntStateOf(currentVolumeState) }
 
     Column(
         modifier = modifier,
