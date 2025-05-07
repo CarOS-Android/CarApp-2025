@@ -86,12 +86,12 @@ fun Seat(label: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            modifier = Modifier.height(100.dp),
+            modifier = Modifier.height(70.dp),
             painter = painterResource(id = R.drawable.seat),
             contentDescription = ""
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = label, color = Color.White, fontSize = 28.sp)
+        Text(text = label, color = Color.White, fontSize = 18.sp)
     }
 }
 
