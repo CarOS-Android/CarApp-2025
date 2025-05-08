@@ -118,5 +118,5 @@ fun AirVolume(
 @Preview
 @Composable
 fun PreviewAirVolume() {
-    AirVolume(0, label = "风量", onAirVolumeChange = {})
+    AirVolume(1, label = "风量", onAirVolumeChange = {})
 }
