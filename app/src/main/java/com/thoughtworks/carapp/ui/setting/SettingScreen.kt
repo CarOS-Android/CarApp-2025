@@ -40,15 +40,17 @@ import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 
 @Composable
 fun SettingScreen(
+    switchOn: Boolean,
+    acOn: Boolean,
     acBoxState: AcBoxState,
     airFlowState: AirFlowState,
     toggleFrontWindowDefog: () -> Unit,
     toggleRearWindowDefog: () -> Unit,
     toggleMirrorHeat: () -> Unit,
-    toggleInternalCirculation: () -> Unit
+    toggleInternalCirculation: () -> Unit,
+    switchClicked: () -> Unit,
+    acClicked: () -> Unit,
 ) {
-    var switchOn by remember { mutableStateOf(false) }
-    var acOn by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -70,12 +72,10 @@ fun SettingScreen(
                     switchOn = switchOn,
                     acOn = acOn,
                     switchClicked = {
-                        switchOn = !switchOn
+                       switchClicked.invoke()
                     },
                     acClicked = {
-                        if (switchOn) {
-                            acOn = !acOn
-                        }
+                       acClicked.invoke()
                     }
                 )
                 // 中央内容
@@ -287,11 +287,15 @@ fun CustomIconButton(
 @Composable
 fun PreviewSettingScreen() {
     SettingScreen(
+        switchOn = true,
+        acOn = true,
         acBoxState = AcBoxState(),
         airFlowState = AirFlowState(),
         toggleFrontWindowDefog = {},
         toggleRearWindowDefog = {},
         toggleMirrorHeat = {},
-        toggleInternalCirculation = {}
+        toggleInternalCirculation = {},
+        switchClicked = {},
+        acClicked = {}
     )
 }

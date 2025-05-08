@@ -49,6 +49,8 @@ class MainActivity : ComponentActivity() {
         window.decorView.windowInsetsController?.hide(WindowInsets.Type.statusBars())
         setContent {
             var currentDestination by remember { mutableStateOf(Destination.Main) }
+            var switchOn by remember { mutableStateOf(false) }
+            var acOn by remember { mutableStateOf(false) }
             Row {
                 Column(
                     modifier = Modifier
@@ -94,12 +96,20 @@ class MainActivity : ComponentActivity() {
                         )
 
                         Destination.CarSetting -> SettingScreen(
+                            switchOn,
+                            acOn,
                             currentState.acBoxState,
                             currentState.airFlowState,
                             toggleFrontWindowDefog = { viewModel.dispatch(ViewAction.ToggleFrontWindowDefog) },
                             toggleRearWindowDefog = { viewModel.dispatch(ViewAction.ToggleRearWindowDefog) },
                             toggleMirrorHeat = { viewModel.dispatch(ViewAction.ToggleMirrorHeat) },
-                            toggleInternalCirculation = { viewModel.dispatch(ViewAction.ToggleInternalCirculation) }
+                            toggleInternalCirculation = { viewModel.dispatch(ViewAction.ToggleInternalCirculation) },
+                            switchClicked = { switchOn = !switchOn },
+                            acClicked = {
+                                if (switchOn) {
+                                    acOn = !acOn
+                                }
+                            },
                         )
 
                         else -> {
