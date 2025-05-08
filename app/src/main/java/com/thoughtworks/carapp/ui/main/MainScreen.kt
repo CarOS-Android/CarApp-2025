@@ -20,7 +20,8 @@ fun MainScreen(
     onSweepStep: (Float, TemperatureType) -> Unit,
     toggleHeadLights: () -> Unit,
     toggleHazardLights: () -> Unit,
-    toggleHighBeamLights: () -> Unit
+    toggleHighBeamLights: () -> Unit,
+    onAirVolumeChange: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -39,6 +40,7 @@ fun MainScreen(
                 acBoxState = state.acBoxState,
                 toggleCarLock = toggleCarLock,
                 onSweepStep = onSweepStep,
+                onAirVolumeChange = onAirVolumeChange,
                 toggleHeadLights = toggleHeadLights,
                 toggleHazardLights = toggleHazardLights,
                 toggleHighBeamLights = toggleHighBeamLights,
@@ -63,7 +65,8 @@ fun MainScreenPreview() {
         onSweepStep = { _, _ -> },
         toggleHeadLights = {},
         toggleHazardLights = {},
-        toggleHighBeamLights = {}
+        toggleHighBeamLights = {},
+        onAirVolumeChange = {}
     )
 }
 
@@ -75,6 +78,13 @@ enum class Toggle {
         return when (this) {
             On -> Off
             Off -> On
+        }
+    }
+
+    fun toBoolean(): Boolean {
+        return when (this) {
+            On -> true
+            Off -> false
         }
     }
 }

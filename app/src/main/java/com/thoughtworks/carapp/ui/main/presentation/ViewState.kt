@@ -32,6 +32,21 @@ data class CarLightState(
 data class AcBoxState(
     val driverTemperature: Float = 0.0f,
     val coPilotTemperature: Float = 0.0f,
+    val airVolumeState: Int = 0,
+)
+
+/**
+ * frontWindowDefogState: 前挡风玻璃除雾
+ * rearWindowDefogState: 后挡风玻璃除雾
+ * mirrorHeatState: 后视镜加热
+ * internalCirculationState: 内循环
+ * externalCirculationState: 外循环
+ * */
+data class AirFlowState(
+    val frontWindowDefogState: Toggle = Toggle.Off,
+    val rearWindowDefogState: Toggle = Toggle.Off,
+    val mirrorHeatState: Toggle = Toggle.Off,
+    val internalCirculationState: Toggle = Toggle.On,
 )
 
 data class CarState(
@@ -39,5 +54,6 @@ data class CarState(
     val carLightState: CarLightState = CarLightState(),
     // 门锁状态
     val carLockState: Lock = Lock.Locked,
-    val acBoxState: AcBoxState = AcBoxState()
+    val acBoxState: AcBoxState = AcBoxState(),
+    val airFlowState: AirFlowState = AirFlowState()
 )

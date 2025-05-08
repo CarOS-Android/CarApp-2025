@@ -38,7 +38,8 @@ fun CarControl(
     onSweepStep: (Float, TemperatureType) -> Unit,
     toggleHeadLights: () -> Unit,
     toggleHazardLights: () -> Unit,
-    toggleHighBeamLights: () -> Unit
+    toggleHighBeamLights: () -> Unit,
+    onAirVolumeChange: (Int) -> Unit
 ) {
 
     Column(
@@ -81,7 +82,11 @@ fun CarControl(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier.weight(7f)) {
-                AcBox(acBoxState = acBoxState, onSweepStep = onSweepStep)
+                AcBox(
+                    acBoxState = acBoxState,
+                    onSweepStep = onSweepStep,
+                    onAirVolumeChange = onAirVolumeChange
+                )
             }
             Box(
                 modifier = Modifier
@@ -216,7 +221,8 @@ private fun Clock(modifier: Modifier) {
 private fun AcBox(
     modifier: Modifier = Modifier,
     acBoxState: AcBoxState,
-    onSweepStep: (Float, TemperatureType) -> Unit
+    onSweepStep: (Float, TemperatureType) -> Unit,
+    onAirVolumeChange: (Int) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -234,24 +240,31 @@ private fun AcBox(
             contentDescription = null
         )
 
-        Row(modifier = Modifier.padding(22.dp)) {
+        Row(
+            modifier = Modifier.padding(22.dp),
+        ) {
             AirCondition(
                 label = "主驾",
                 currentValue = acBoxState.driverTemperature,
                 handleSweepStep = { temp ->
                     onSweepStep(temp, TemperatureType.Driver)
-                })
-            Image(
-                modifier = Modifier.weight(1f),
-                painter = painterResource(id = R.drawable.ic_fan),
-                contentDescription = null
+                },
+                modifier = Modifier.weight(1f)
+            )
+            AirVolume(
+                label = "风量",
+                currentVolumeState = acBoxState.airVolumeState,
+                onAirVolumeChange = onAirVolumeChange,
+                modifier = Modifier.weight(1f)
             )
             AirCondition(
                 label = "副驾",
                 currentValue = acBoxState.coPilotTemperature,
                 handleSweepStep = { temp ->
                     onSweepStep(temp, TemperatureType.CoPilot)
-                })
+                },
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
@@ -271,20 +284,22 @@ fun PreviewCenterCar() {
             autoHoldState = Toggle.Off,
             engineState = Toggle.Off
         ),
-        acBoxState = AcBoxState(
-            driverTemperature = 20f,
-            coPilotTemperature = 22f
-        ),
         carLightState = CarLightState(
             hazardLightsState = Toggle.Off,
             headLightsState = Toggle.Off,
             highBeamState = Toggle.Off
         ),
         carLockState = Lock.Locked,
+        acBoxState = AcBoxState(
+            driverTemperature = 20f,
+            coPilotTemperature = 22f,
+            airVolumeState = 0,
+        ),
         toggleCarLock = {},
+        onSweepStep = { _, _ -> },
         toggleHeadLights = {},
         toggleHazardLights = {},
         toggleHighBeamLights = {},
-        onSweepStep = { _, _ -> }
+        onAirVolumeChange = {}
     )
 }

@@ -36,7 +36,6 @@ import com.thoughtworks.carapp.ui.main.presentation.ViewAction
 import com.thoughtworks.carapp.ui.main.viewmodel.CarViewModel
 import com.thoughtworks.carapp.ui.setting.SettingScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,6 +49,8 @@ class MainActivity : ComponentActivity() {
         window.decorView.windowInsetsController?.hide(WindowInsets.Type.statusBars())
         setContent {
             var currentDestination by remember { mutableStateOf(Destination.Main) }
+            var switchOn by remember { mutableStateOf(false) }
+            var acOn by remember { mutableStateOf(false) }
             Row {
                 Column(
                     modifier = Modifier
@@ -80,6 +81,9 @@ class MainActivity : ComponentActivity() {
                             onSweepStep = { it, temperatureType ->
                                 viewModel.dispatch(ViewAction.OnSweepStep(it, temperatureType))
                             },
+                            onAirVolumeChange = {
+                                viewModel.dispatch(ViewAction.OnAirVolumeChange(it))
+                            },
                             toggleHeadLights = {
                                 viewModel.dispatch(ViewAction.ToggleHeadLights)
                             },
@@ -90,7 +94,24 @@ class MainActivity : ComponentActivity() {
                                 viewModel.dispatch(ViewAction.ToggleHighBeamLights)
                             }
                         )
-                        Destination.CarSetting -> SettingScreen()
+
+                        Destination.CarSetting -> SettingScreen(
+                            switchOn,
+                            acOn,
+                            currentState.acBoxState,
+                            currentState.airFlowState,
+                            toggleFrontWindowDefog = { viewModel.dispatch(ViewAction.ToggleFrontWindowDefog) },
+                            toggleRearWindowDefog = { viewModel.dispatch(ViewAction.ToggleRearWindowDefog) },
+                            toggleMirrorHeat = { viewModel.dispatch(ViewAction.ToggleMirrorHeat) },
+                            toggleInternalCirculation = { viewModel.dispatch(ViewAction.ToggleInternalCirculation) },
+                            switchClicked = { switchOn = !switchOn },
+                            acClicked = {
+                                if (switchOn) {
+                                    acOn = !acOn
+                                }
+                            },
+                        )
+
                         else -> {
                             Box(
                                 contentAlignment = Alignment.Center,
