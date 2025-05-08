@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +33,17 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thoughtworks.carapp.R
 import com.thoughtworks.carapp.ui.main.components.AirFlowControlPanel
 import com.thoughtworks.carapp.ui.main.components.FanStateIcon
 import com.thoughtworks.carapp.ui.main.presentation.AcBoxState
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
+import com.thoughtworks.carapp.ui.setting.components.AreaSeat
+import com.thoughtworks.carapp.ui.setting.components.SeatControl
+import com.thoughtworks.carapp.ui.setting.presentation.SeatControlUiState
+import com.thoughtworks.carapp.ui.setting.presentation.SeatEvent
+import com.thoughtworks.carapp.ui.setting.viewmodel.SeatViewModel
 
 @Composable
 fun SettingScreen(
@@ -52,6 +59,9 @@ fun SettingScreen(
     acClicked: () -> Unit,
 ) {
 
+    val seatViewModel: SeatViewModel = hiltViewModel()
+    val seatOperationState = seatViewModel.operationState.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -59,13 +69,14 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.7f)
+                .padding(bottom = 16.dp)
                 .background(Color.Black)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.6f)
-                    .padding(top = 96.dp, start = 72.dp),
+                    .weight(0.8f)
+                    .padding(top = 96.dp, start = 72.dp)
             ) {
                 // 左侧菜单栏
                 LeftControlBar(
@@ -80,7 +91,7 @@ fun SettingScreen(
                 )
                 // 中央内容
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(start = 40.dp, end = 40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     TemperatureAndFanControl(acBoxState, switchOn, acOn)
@@ -109,11 +120,11 @@ fun SettingScreen(
             }
         }
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             // 底部内容
             Row {
-
+                SeatControlRow(seatOperationState.value, seatViewModel::handleEvent)
             }
         }
     }
@@ -213,7 +224,6 @@ fun AirFlowModePanel(
     }
 }
 
-
 @Composable
 fun LeftControlBar(
     switchOn: Boolean,
@@ -281,6 +291,32 @@ fun CustomIconButton(
             .size(80.dp)
             .clickable { onClick() },
     )
+}
+
+@Composable
+fun SeatControlRow(seatState: SeatControlUiState, handleEvent: (SeatEvent) -> Unit) {
+    Row(
+        modifier = Modifier
+            .height(207.dp)
+            .fillMaxWidth()
+            .padding(start = 53.dp, end = 30.dp),
+        horizontalArrangement = Arrangement.spacedBy(40.dp)
+    ) {
+        AreaSeat.entries.forEach { seat ->
+            Box(modifier = Modifier.weight(1f)) {
+                SeatControl(
+                    areaSeat = seat,
+                    seatState = seatState.getSeatState(seat),
+                    handleEvent = handleEvent
+                )
+            }
+        }
+        Image(
+            modifier = Modifier.height(207.dp),
+            painter = painterResource(id = R.drawable.ambient_light),
+            contentDescription = ""
+        )
+    }
 }
 
 @Preview(widthDp = 1408, heightDp = 792)
