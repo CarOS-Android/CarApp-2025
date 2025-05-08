@@ -28,3 +28,19 @@ data class SeatControlUiState(
         }
     }
 }
+
+data class FragranceSeatState(
+    var driverFragrance: Int = 0,
+    val copilotFragrance: Int = 0,
+    val rearRawFragrance: Int = 0
+)
+
+enum class FragranceArea(val displayName: String, val areaId: Int) {
+    DRIVER("驾驶位", 1),
+    COPILOT("副驾驶位", 4),
+    REAR("后排", 32);
+
+    companion object {
+        fun fromId(id: Int): FragranceArea? = entries.find { it.areaId == id }
+    }
+}

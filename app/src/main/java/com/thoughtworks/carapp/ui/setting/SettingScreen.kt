@@ -40,7 +40,9 @@ import com.thoughtworks.carapp.ui.main.components.FanStateIcon
 import com.thoughtworks.carapp.ui.main.presentation.AcBoxState
 import com.thoughtworks.carapp.ui.main.presentation.AirFlowState
 import com.thoughtworks.carapp.ui.setting.components.AreaSeat
+import com.thoughtworks.carapp.ui.setting.components.CyclableImageView
 import com.thoughtworks.carapp.ui.setting.components.SeatControl
+import com.thoughtworks.carapp.ui.setting.presentation.FragranceArea
 import com.thoughtworks.carapp.ui.setting.presentation.SeatControlUiState
 import com.thoughtworks.carapp.ui.setting.presentation.SeatEvent
 import com.thoughtworks.carapp.ui.setting.viewmodel.SeatViewModel
@@ -112,11 +114,7 @@ fun SettingScreen(
                 modifier = Modifier.weight(0.4f)
             ) {
                 // 右侧内容
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                }
+                FragranceControlRow()
             }
         }
         Box(
@@ -316,6 +314,42 @@ fun SeatControlRow(seatState: SeatControlUiState, handleEvent: (SeatEvent) -> Un
             painter = painterResource(id = R.drawable.ambient_light),
             contentDescription = ""
         )
+    }
+}
+
+@Composable
+fun FragranceControlRow() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(top = 100.dp)
+                .size(300.dp, 420.dp),
+            painter = painterResource(id = R.drawable.fragrance_seat),
+            contentDescription = "Fragrance Seat"
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 90.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                Spacer(modifier = Modifier.height(12.dp))
+                FragranceArea.entries.forEach { seat ->
+                    Box(modifier = Modifier) {
+                        CyclableImageView(
+                            fragranceArea = seat
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
